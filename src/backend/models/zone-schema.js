@@ -5,11 +5,7 @@ let zoneSchema = new Schema({
     zone: {
         type: Number
     },
-    created_date: {
-        type: Date,
-        default: new Date(),
-    }
-}, {
+}, {    timestamps: true,
         collection: 'zone'
     })
 

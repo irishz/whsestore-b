@@ -12,6 +12,7 @@ import StoreSHome from "./components/StoreS/StoreSHome";
 import StoreBHome from "./components/StoreB/StoreBHome";
 import STDHome from "./components/STD/STDHome";
 import Zone from "./components/Zone/Zone";
+import ZoneCreate from "./components/Zone/ZoneCreate";
 
 function App() {
   const [userToken, setuserToken] = useState(localStorage.getItem("token"));
@@ -39,8 +40,10 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/store-s" element={<StoreSHome />} />
           <Route path="/store-b" element={<StoreBHome />} />
-          <Route path="/zone" element={<Zone />} />
-          <Route path="/channel" element={<Zone />} />
+          <Route path="/zone">
+            <Route index element={<Zone />} />
+            <Route path="/zone/create" element={<ZoneCreate />} />
+          </Route>
           <Route path="/channel" element={<StoreBHome />} />
           <Route path="/std" element={<STDHome />} />
         </Routes>
