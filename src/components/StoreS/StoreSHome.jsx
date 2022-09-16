@@ -17,6 +17,9 @@ import {
   Heading,
   HStack,
   Input,
+  List,
+  ListItem,
+  OrderedList,
   Spacer,
   Tab,
   TabList,
@@ -35,6 +38,7 @@ function StoreSHome() {
   const [scanInput, setscanInput] = useState("");
   const [locList, setlocList] = useState([]);
   const [zoneList, setzoneList] = useState([]);
+  const [historyList, sethistoryList] = useState([]);
   const [chList, setchList] = useState([]);
 
   useEffect(() => {
@@ -54,6 +58,14 @@ function StoreSHome() {
       setchList([]);
     };
   }, []);
+
+  useEffect(() => {
+    const jobExisted = historyList.find((job) => job === scanInput);
+    if (!jobExisted) {
+      console.log("inserted to history");
+      sethistoryList(historyList.push(scanInput));
+    }
+  }, [scanInput]);
 
   function renderLocationData(zone, ch) {
     return locList.filter((loc) => loc.zone === zone && loc.ch === ch);
@@ -86,21 +98,76 @@ function StoreSHome() {
 
         {scanInput.length > 0 ? (
           locList
-            .filter((loc) => loc.job === scanInput.toUpperCase)
+            .filter((loc) => loc.job === scanInput)
             .map((loc) => (
-              <Flex h={"xl"} gap={3}>
-                <Box flex={1} bgColor="red">
-                  <Box>{loc.zone}</Box>
-                </Box>
-                <Box flex={1} bgColor="green">
-                  {loc.ch}
-                </Box>
-                <Box flex={1} bgColor="blue">
-                  3
+              <Flex h={"sm"} gap={3}>
+                <Flex
+                  flex={1}
+                  p={3}
+                  direction={"column"}
+                  bgColor={"gray.200"}
+                  rounded="lg"
+                  shadow="lg"
+                  h="full"
+                  justifyContent={"center"}
+                  alignItems="center"
+                >
+                  <Heading fontSize={96}>{loc.zone}</Heading>
+                </Flex>
+                <Flex
+                  flex={1}
+                  p={3}
+                  direction={"column"}
+                  bgColor={"gray.200"}
+                  rounded="lg"
+                  shadow="lg"
+                  h="full"
+                  justifyContent={"center"}
+                  alignItems="center"
+                >
+                  <Heading fontSize={96}>{loc.ch}</Heading>
+                </Flex>
+                <Box
+                  flex={1}
+                  rounded="lg"
+                  border
+                  borderWidth={1}
+                  borderColor="gray.400"
+                >
+                  <VStack>
+                    <Box
+                      p={2}
+                      borderBottomWidth={1}
+                      borderColor="gray.400"
+                      w="100%"
+                    >
+                      <Text textAlign={"center"}>ประวัติการสแกน</Text>
+                    </Box>
+                    <Box w="100%" p={3}>
+                      <OrderedList spacing={2}>
+                        {historyList.map((data) => (
+                          <ListItem>{data}</ListItem>
+                        ))}
+                      </OrderedList>
+                    </Box>
+                  </VStack>
                 </Box>
               </Flex>
             ))
         ) : (
+          // .map((loc) => (
+          // <Flex h={"xl"} gap={3}>
+          //   <Box flex={1} bgColor="red">
+          //     <Box>{loc.zone}</Box>
+          //   </Box>
+          //   <Box flex={1} bgColor="green">
+          //     {loc.ch}
+          //   </Box>
+          //   <Box flex={1} bgColor="blue">
+          //     3
+          //   </Box>
+          // </Flex>
+          // ))
           <Box>
             <Tabs isFitted variant={"enclosed"}>
               <TabList>
@@ -161,7 +228,7 @@ function StoreSHome() {
                                 <AccordionPanel bgColor={"gray.100"}>
                                   {renderLocationData(zone.zone, ch.ch).map(
                                     (loc) => (
-                                      <Flex mt={1}>
+                                      <Flex mt={1} key={loc.job}>
                                         <Text>{loc.job}</Text>
                                         <Spacer />
                                         <Text>{loc.item}</Text>
