@@ -28,6 +28,7 @@ const getAllZone = (req, res) => {
   });
 };
 
+// Get one zone
 const getOneZone = (req, res) => {
   Zone.findById(req.params.id, (error, data) => {
     if (data) {

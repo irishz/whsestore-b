@@ -79,7 +79,7 @@ function ZoneCreate() {
             </FormControl>
             <Flex gap={3}>
               <Button colorScheme={"teal"} variant="solid" type="submit">
-                สร้าง
+                เพิ่มโซน
               </Button>
               <Button
                 colorScheme={"red"}

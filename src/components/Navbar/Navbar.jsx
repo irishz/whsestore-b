@@ -3,6 +3,7 @@ import {
   Avatar,
   Box,
   Button,
+  Divider,
   Flex,
   Icon,
   IconButton,
@@ -19,8 +20,10 @@ import React, { useContext, useEffect, useState } from "react";
 import { RiLogoutBoxLine } from "react-icons/ri";
 import AuthContext from "../../Context/AuthContext";
 import { variables } from "../../Variables";
-import { ArrowDownIcon, ChevronDownIcon } from "@chakra-ui/icons";
-import { useNavigate } from "react-router-dom";
+import { ChevronDownIcon, HamburgerIcon } from "@chakra-ui/icons";
+import { Link, useNavigate } from "react-router-dom";
+import { BsFillPersonFill } from "react-icons/bs";
+import NavbarMenuList from "./NavbarData";
 
 function Navbar() {
   const authCtx = useContext(AuthContext);
@@ -47,55 +50,6 @@ function Navbar() {
     authCtx.setprogram("");
   }
 
-  function renderLeftMenuItem() {
-    let StoreSMenuList,
-      StoreBMenuList,
-      STDMenuList = [];
-    switch (authCtx.program) {
-      case "Store S":
-        const base_url = "/store-s";
-        StoreSMenuList = [
-          { menu: "เพิ่ม Item", url: `${base_url}/add-items` },
-          {
-            menu: "ย้าย Location",
-            url: `${base_url}/move-location`,
-          },
-          {
-            menu: "devided",
-          },
-          {
-            menu: "Check Onhand",
-            url: `${base_url}/check-onhand`,
-          },
-          {
-            menu: "Check Onhand Other",
-            url: `${base_url}/check-onhand-other`,
-          },
-          {
-            menu: "ค้นหา Location",
-            url: `${base_url}/find-location`,
-          },
-          {
-            menu: "Compare Job",
-            url: `${base_url}/compare-job`,
-          },
-          {
-            menu: "ยิงครบ Job",
-            url: `${base_url}/check-fulljob`,
-          },
-        ];
-
-        return StoreSMenuList.map((data) => <MenuItem>{data.menu}</MenuItem>);
-        break;
-      case "Store B":
-        break;
-      case "Store STD":
-        break;
-      default:
-        break;
-    }
-  }
-
   return (
     <Flex
       justify={"space-between"}
@@ -103,11 +57,48 @@ function Navbar() {
       bgColor={"#7097A8"}
       color="white"
       alignItems={"center"}
+      mb={5}
     >
       {/* Left Menu */}
-      <Box display={{ lg: "block", sm: "none" }}>MenuToggle</Box>
+      <Box display={{ lg: "flex", sm: "none" }} gap={3}>
+        {NavbarMenuList.menu_store_s.map((data) => (
+          <Link to={data.url} key={data.name}>
+            <Text
+              display="inline-flex"
+              alignItems={"center"}
+              gap={1}
+              _hover={{
+                color: "#ECD59F",
+                borderBottomColor: "#ECD59F",
+                borderBottomWidth: 1,
+                pb: 1,
+              }}
+            >
+              {data.icon}
+              {data.name}
+            </Text>
+          </Link>
+        ))}
+      </Box>
+      <Box display={{ lg: "none", sm: "block" }}>
+        <Menu>
+          <MenuButton
+            as={IconButton}
+            icon={<HamburgerIcon />}
+            variant="outline"
+          />
+          <MenuList color={"gray.600"}>
+            {NavbarMenuList.menu_store_s.map((data) => (
+              <Link to={data.url} key={data.name}>
+                <MenuItem>{data.name}</MenuItem>
+              </Link>
+            ))}
+          </MenuList>
+        </Menu>
+      </Box>
       {/* Right Menu */}
       <Box display={"inline-flex"} gap={3} alignItems="center">
+        <Avatar name={userData.name} size="sm" />
         <Text>{userData.name}</Text>
         <Menu>
           <MenuButton
@@ -141,6 +132,13 @@ function Navbar() {
                 <MenuItem>จัดการชั้น</MenuItem>
               </>
             )}
+            <MenuDivider />
+            <MenuItem
+              icon={<BsFillPersonFill size={16} />}
+              onClick={() => navigate("/user")}
+            >
+              จัดการผู้ใช้
+            </MenuItem>
             <MenuDivider />
             <MenuItem
               color={"red.600"}

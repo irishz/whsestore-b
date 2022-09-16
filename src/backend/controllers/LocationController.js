@@ -14,7 +14,7 @@ const createLocation = asyncHandler(async (req, res) => {
   const location = await Location.create({ job, item, ch, zone });
 
   if (location) {
-    return res.status(200).json({ msg: "เพิ่ม location สำเร็จ" });
+    return res.status(200).json({ msg: "เพิ่มข้อมูลสำเร็จ" });
   }
   throw new Error("เกิดข้อผิดพลาด");
 });

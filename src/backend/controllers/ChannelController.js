@@ -28,6 +28,7 @@ const getAllChannel = (req, res) => {
   });
 };
 
+//Get one channel
 const getOneChannel = (req, res) => {
   Channel.findById(req.params.id, (error, data) => {
     if (data) {

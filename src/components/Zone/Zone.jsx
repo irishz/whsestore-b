@@ -1,12 +1,15 @@
-import { DeleteIcon, EditIcon, PlusSquareIcon } from "@chakra-ui/icons";
+import { DeleteIcon, PlusSquareIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
+  Container,
   Flex,
+  Heading,
   Table,
   TableContainer,
   Tbody,
   Td,
+  Text,
   Th,
   Thead,
   Tr,
@@ -22,29 +25,47 @@ import Navbar from "../Navbar/Navbar";
 
 function Zone() {
   const [zoneList, setzoneList] = useState([]);
-  const toast = useToast()
+  const toast = useToast();
+  const [isDeleted, setisDeleted] = useState(false);
 
   useEffect(() => {
     axios.get(variables.API_URL + "zone").then((res) => {
       console.log(res.data);
       setzoneList(res.data);
     });
-  }, [toast]);
 
-  function handleDeleteZone(zone_id){
+    return () => {
+      setisDeleted(false);
+    };
+  }, [isDeleted]);
+
+  function handleDeleteZone(zone_id) {
     axios.delete(variables.API_URL + `zone/${zone_id}`).then((res) => {
       toast({
         title: res.data.msg,
-      })
-    })
+        status: "success",
+        isClosable: true,
+        duration: 2000,
+      });
+      setisDeleted(true);
+    });
   }
 
   return (
     <Box>
       <Navbar />
-      <Box maxWidth={"container.xl"} mt={5}>
-        <Flex justifyContent={"space-between"} px={3}>
-          <Box>จัดการโซน</Box>
+      <Container maxWidth={"container.lg"}>
+        <Flex
+          justifyContent={"space-between"}
+          px={3}
+          py={2}
+          borderColor="gray.500"
+          borderBottom
+          borderBottomWidth={2}
+        >
+          <Heading size={"lg"}>
+            จัดการโซน
+          </Heading>
           <Link to={"/zone/create"}>
             <Button
               leftIcon={<PlusSquareIcon />}
@@ -62,39 +83,32 @@ function Zone() {
                 <Th>ลำดับ</Th>
                 <Th>โซน</Th>
                 <Th>วันที่สร้าง</Th>
-                <Th>แก้ไขล่าสุด</Th>
                 <Th></Th>
               </Tr>
             </Thead>
             <Tbody>
-              {zoneList.map((data, idx) => (
-                <Tr key={data.zone}>
-                  <Td>{idx + 1}</Td>
-                  <Td>{data.zone}</Td>
-                  <Td>{moment(data.createdAt).format("DD/MM/YYYY HH:mm")}</Td>
-                  <Td>{moment(data.updatedAt).format("DD/MM/YYYY HH:mm")}</Td>
-                  <Td display="inline-block">
-                    <EditIcon
-                      w={4}
-                      h={4}
-                      color="facebook"
-                      _hover={{ color: "facebook.300" }}
-                      mx={2}
-                    />
-                    <DeleteIcon
-                      w={4}
-                      h={4}
-                      color="red"
-                      _hover={{ color: "red.300" }}
-                      onClick={() => handleDeleteZone(data._id)}
-                    />
-                  </Td>
-                </Tr>
-              ))}
+              {zoneList
+                .sort((a, b) => a.zone - b.zone)
+                .map((data, idx) => (
+                  <Tr key={data.zone}>
+                    <Td>{idx + 1}</Td>
+                    <Td>{data.zone}</Td>
+                    <Td>{moment(data.createdAt).format("DD/MM/YYYY HH:mm")}</Td>
+                    <Td display="inline-block">
+                      <DeleteIcon
+                        w={4}
+                        h={4}
+                        color="red"
+                        _hover={{ color: "red.300" }}
+                        onClick={() => handleDeleteZone(data._id)}
+                      />
+                    </Td>
+                  </Tr>
+                ))}
             </Tbody>
           </Table>
         </TableContainer>
-      </Box>
+      </Container>
     </Box>
   );
 }
