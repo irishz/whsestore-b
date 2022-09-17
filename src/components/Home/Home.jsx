@@ -21,15 +21,15 @@ function Home() {
     switch (value) {
       case "Store S":
         setprogramMode("Store S");
-        authCtx.setprogram("Store S");
+        localStorage.setItem("program", "Store S");
         break;
       case "Store B":
         setprogramMode("Store B");
-        authCtx.setprogram("Store B");
+        localStorage.setItem("program", "Store B");
         break;
       case "จัด STD":
         setprogramMode("จัด STD");
-        authCtx.setprogram("จัด STD");
+        localStorage.setItem("program", "จัด STD");
         break;
       default:
         break;
@@ -57,11 +57,13 @@ function Home() {
     <Flex
       justifyContent={"center"}
       h={"100vh"}
-      w="full"
       alignItems="center"
       bgColor="gray.300"
     >
-      <Stack gap={5} direction={{ lg: "row", sm: "column" }}>
+      <Stack
+        gap={5}
+        direction={{ base: "column", sm: "column", md: "row", lg: "row" }}
+      >
         {[
           { name: "Store S", color: "orange" },
           { name: "Store B", color: "orange" },

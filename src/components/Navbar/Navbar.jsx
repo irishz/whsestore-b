@@ -1,4 +1,3 @@
-import { AiFillSetting } from "react-icons/ai";
 import {
   Avatar,
   Box,
@@ -28,6 +27,9 @@ import NavbarMenuList from "./NavbarData";
 function Navbar() {
   const authCtx = useContext(AuthContext);
   const [userData, setuserData] = useState({});
+  const [programMode, setprogramMode] = useState(
+    localStorage.getItem("program")
+  );
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -47,7 +49,9 @@ function Navbar() {
   function handleLogout() {
     localStorage.removeItem("token");
     authCtx.setuserToken("");
-    authCtx.setprogram("");
+    setprogramMode(null);
+    localStorage.removeItem("program");
+    localStorage.removeItem("historyScan");
   }
 
   return (
@@ -119,7 +123,7 @@ function Navbar() {
             ตั้งค่า
           </MenuButton>
           <MenuList color={"gray.600"}>
-            {authCtx.program.includes("Store") ? (
+            {programMode.includes("Store") ? (
               <>
                 <MenuItem onClick={() => navigate("/zone")}>จัดการโซน</MenuItem>
                 <MenuItem onClick={() => navigate("/channel")}>

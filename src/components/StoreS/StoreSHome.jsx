@@ -7,6 +7,7 @@ import {
   Badge,
   Box,
   Button,
+  color,
   Container,
   Flex,
   FormControl,
@@ -15,8 +16,9 @@ import {
   Grid,
   GridItem,
   Heading,
-  HStack,
   Input,
+  InputGroup,
+  InputRightAddon,
   List,
   ListItem,
   OrderedList,
@@ -27,19 +29,26 @@ import {
   TabPanels,
   Tabs,
   Text,
+  useToast,
   VStack,
 } from "@chakra-ui/react";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { variables } from "../../Variables";
 import Navbar from "../Navbar/Navbar";
+import { RiRefreshLine } from "react-icons/ri";
+import { DeleteIcon } from "@chakra-ui/icons";
+import zoneAudio from "../../assets/sounds/zone.mp3";
+import channelAudio from "../../assets/sounds/channel.mp3";
 
 function StoreSHome() {
   const [scanInput, setscanInput] = useState("");
   const [locList, setlocList] = useState([]);
   const [zoneList, setzoneList] = useState([]);
-  const [historyList, sethistoryList] = useState([]);
   const [chList, setchList] = useState([]);
+  const [historyList, sethistoryList] = useState([]);
+  const inputRef = useRef();
+  const toast = useToast();
 
   useEffect(() => {
     axios.get(variables.API_URL + "location").then((res) => {
@@ -52,20 +61,18 @@ function StoreSHome() {
       setchList(res.data);
     });
 
+    //Check localstorage historyScan is exist?
+    const histList = localStorage.getItem("historyScan");
+    if (histList) {
+      sethistoryList(JSON.parse(histList));
+    }
+
     return () => {
       setlocList([]);
       setzoneList([]);
       setchList([]);
     };
   }, []);
-
-  useEffect(() => {
-    const jobExisted = historyList.find((job) => job === scanInput);
-    if (!jobExisted) {
-      console.log("inserted to history");
-      sethistoryList(historyList.push(scanInput));
-    }
-  }, [scanInput]);
 
   function renderLocationData(zone, ch) {
     return locList.filter((loc) => loc.zone === zone && loc.ch === ch);
@@ -75,8 +82,79 @@ function StoreSHome() {
     if (e.keyCode === 9 || e.charCode === 13) {
       e.preventDefault();
       setscanInput(e.target.value);
+      inputRef.current.select();
+
+      let jobLocationExist = locList.find((loc) => loc.job === e.target.value);
+      let jobHistoryExist = historyList.find((data) => data === e.target.value);
+
+      if (jobHistoryExist) {
+        playAudio(e.target.value);
+        return;
+      }
+      if (jobLocationExist) {
+        historyList.push(e.target.value);
+        localStorage.setItem("historyScan", JSON.stringify(historyList));
+        playAudio(e.target.value);
+        return;
+      }
+
+      toast({
+        title: "เกิดข้อผิดพลาด",
+        description: "ไม่พบ Job นี้ในระบบ",
+        status: "error",
+        duration: 3000,
+      });
     }
   }
+
+  function playAudio(job) {
+    const data = locList.find((loc) => loc.job === job);
+
+    if (data) {
+      playZone(data.zone);
+      playChannel(data.ch);
+    }
+  }
+
+  function playZone(zone) {
+    console.log("play zone");
+
+    let audioZone = new Audio(zoneAudio),
+      numberZone = new Audio("../../assets/sounds/1.mp3");
+
+    setTimeout(() => {
+      audioZone.play();
+    }, 100);
+    setTimeout(() => {
+      numberZone.play();
+    }, 600);
+  }
+
+  function playChannel(channel) {
+    console.log("play channel");
+
+    let audioChannel = new Audio(channelAudio),
+      numberChannel = new Audio("../../assets/sounds/1.mp3");
+
+    setTimeout(() => {
+      audioChannel.play();
+    }, 100);
+    setTimeout(() => {
+      numberChannel.play();
+    }, 600);
+  }
+
+  function handleInputClear() {
+    setscanInput("");
+    inputRef.current.select();
+  }
+
+  function handleHistoryClear() {
+    sethistoryList([]);
+    localStorage.removeItem("historyScan");
+    handleInputClear();
+  }
+
   return (
     <div>
       <Navbar />
@@ -87,12 +165,23 @@ function StoreSHome() {
             <FormLabel fontSize={["sm", "md", "lg", "xl"]}>
               ค้นหาโดยการสแกนหมายเลข Job
             </FormLabel>
-            <Input
-              type={"text"}
-              maxLength={10}
-              onKeyDown={(e) => handleScanInput(e)}
-              onKeyPress={(e) => handleScanInput(e)}
-            />
+            <InputGroup>
+              <Input
+                ref={inputRef}
+                type={"text"}
+                maxLength={10}
+                onKeyDown={(e) => handleScanInput(e)}
+                onKeyPress={(e) => handleScanInput(e)}
+                autoFocus
+              />
+              {scanInput ? (
+                <InputRightAddon
+                  children={<RiRefreshLine />}
+                  as={Button}
+                  onClick={() => handleInputClear()}
+                />
+              ) : null}
+            </InputGroup>
           </FormControl>
         </Box>
 
@@ -100,7 +189,7 @@ function StoreSHome() {
           locList
             .filter((loc) => loc.job === scanInput)
             .map((loc) => (
-              <Flex h={"sm"} gap={3}>
+              <Flex h={"sm"} gap={3} key={loc.job}>
                 <Flex
                   flex={1}
                   p={3}
@@ -113,6 +202,7 @@ function StoreSHome() {
                   alignItems="center"
                 >
                   <Heading fontSize={96}>{loc.zone}</Heading>
+                  <Text>โซน</Text>
                 </Flex>
                 <Flex
                   flex={1}
@@ -126,6 +216,7 @@ function StoreSHome() {
                   alignItems="center"
                 >
                   <Heading fontSize={96}>{loc.ch}</Heading>
+                  <Text>ช่อง</Text>
                 </Flex>
                 <Box
                   flex={1}
@@ -134,40 +225,48 @@ function StoreSHome() {
                   borderWidth={1}
                   borderColor="gray.400"
                 >
-                  <VStack>
-                    <Box
-                      p={2}
-                      borderBottomWidth={1}
-                      borderColor="gray.400"
-                      w="100%"
-                    >
-                      <Text textAlign={"center"}>ประวัติการสแกน</Text>
+                  <Flex
+                    flexDirection={"column"}
+                    justifyContent="space-between"
+                    h={"full"}
+                  >
+                    <Box p={2} borderBottomWidth={1} borderColor="gray.400">
+                      <Text textAlign={"center"} fontSize="lg">
+                        ประวัติการสแกน
+                      </Text>
                     </Box>
-                    <Box w="100%" p={3}>
+                    <Box
+                      py={3}
+                      px={5}
+                      overflowY="auto"
+                      maxHeight={280}
+                      h="full"
+                    >
                       <OrderedList spacing={2}>
-                        {historyList.map((data) => (
-                          <ListItem>{data}</ListItem>
-                        ))}
+                        {historyList
+                          ? historyList.map((data) => (
+                              <ListItem key={data}>{data}</ListItem>
+                            ))
+                          : null}
                       </OrderedList>
                     </Box>
-                  </VStack>
+                    <Box>
+                      <Button
+                        variant={"solid"}
+                        colorScheme="red"
+                        m={1}
+                        w="97%"
+                        leftIcon={<DeleteIcon />}
+                        onClick={() => handleHistoryClear()}
+                      >
+                        ล้างประวัติการสแกน
+                      </Button>
+                    </Box>
+                  </Flex>
                 </Box>
               </Flex>
             ))
         ) : (
-          // .map((loc) => (
-          // <Flex h={"xl"} gap={3}>
-          //   <Box flex={1} bgColor="red">
-          //     <Box>{loc.zone}</Box>
-          //   </Box>
-          //   <Box flex={1} bgColor="green">
-          //     {loc.ch}
-          //   </Box>
-          //   <Box flex={1} bgColor="blue">
-          //     3
-          //   </Box>
-          // </Flex>
-          // ))
           <Box>
             <Tabs isFitted variant={"enclosed"}>
               <TabList>

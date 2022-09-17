@@ -81,7 +81,7 @@ function Login(props) {
       >
         <Stack
           gap={2}
-          w="25%"
+          w={["sm", "md"]}
           border
           borderWidth={1}
           borderRadius={7}
