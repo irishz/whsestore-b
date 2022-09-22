@@ -4,7 +4,6 @@ import {
   Button,
   Divider,
   Flex,
-  Icon,
   IconButton,
   Menu,
   MenuButton,
@@ -64,39 +63,124 @@ function Navbar() {
       mb={5}
     >
       {/* Left Menu */}
-      <Box display={{ lg: "flex", sm: "none" }} gap={3}>
-        {NavbarMenuList.menu_store_s.map((data) => (
-          <Link to={data.url} key={data.name}>
-            <Text
-              display="inline-flex"
-              alignItems={"center"}
-              gap={1}
-              _hover={{
-                color: "#ECD59F",
-                borderBottomColor: "#ECD59F",
-                borderBottomWidth: 1,
-                pb: 1,
-              }}
-            >
-              {data.icon}
-              {data.name}
-            </Text>
-          </Link>
-        ))}
+      <Box display={{ lg: "flex", xs: 'none' }} gap={3}>
+        {programMode === "Store S"
+          ? NavbarMenuList.menu_store_s.map((data) =>
+              data.divider ? (
+                <Divider
+                  key={data.name}
+                  orientation="vertical"
+                  borderWidth={1}
+                  borderColor="white"
+                  h="auto"
+                />
+              ) : (
+                <Link to={data.url} key={data.name}>
+                  <Text
+                    display="inline-flex"
+                    alignItems={"center"}
+                    gap={1}
+                    _hover={{
+                      color: "#ECD59F",
+                      borderBottomColor: "#ECD59F",
+                      borderBottomWidth: 1,
+                      pb: 1,
+                    }}
+                  >
+                    {data.icon}
+                    {data.name}
+                  </Text>
+                </Link>
+              )
+            )
+          : programMode === "Store B"
+          ? NavbarMenuList.menu_store_b.map((data) => (
+              <Link to={data.url} key={data.name}>
+                <Text
+                  display="inline-flex"
+                  alignItems={"center"}
+                  gap={1}
+                  _hover={{
+                    color: "#ECD59F",
+                    borderBottomColor: "#ECD59F",
+                    borderBottomWidth: 1,
+                    pb: 1,
+                  }}
+                >
+                  {data.icon}
+                  {data.name}
+                </Text>
+              </Link>
+            ))
+          : NavbarMenuList.menu_std.map((data) => (
+              <Link to={data.url} key={data.name}>
+                <Text
+                  display="inline-flex"
+                  alignItems={"center"}
+                  gap={1}
+                  _hover={{
+                    color: "#ECD59F",
+                    borderBottomColor: "#ECD59F",
+                    borderBottomWidth: 1,
+                    pb: 1,
+                  }}
+                >
+                  {data.icon}
+                  {data.name}
+                </Text>
+              </Link>
+            ))}
       </Box>
-      <Box display={{ lg: "none", sm: "block" }}>
+      <Box display={{ lg: "none", xs: "block" }}>
         <Menu>
           <MenuButton
             as={IconButton}
             icon={<HamburgerIcon />}
             variant="outline"
           />
-          <MenuList color={"gray.600"}>
-            {NavbarMenuList.menu_store_s.map((data) => (
-              <Link to={data.url} key={data.name}>
-                <MenuItem>{data.name}</MenuItem>
-              </Link>
-            ))}
+          <MenuList px={2} color={"gray.600"}>
+            {programMode === "Store S"
+              ? NavbarMenuList.menu_store_s.map((data) =>
+                  data.divider ? (
+                    <Divider key={data.name} />
+                  ) : (
+                    <Link to={data.url} key={data.name}>
+                      <MenuItem>
+                        {data.icon}
+                        {data.name}
+                      </MenuItem>
+                    </Link>
+                  )
+                )
+              : programMode === "Store B"
+              ? NavbarMenuList.menu_store_b.map((data) => (
+                  <Link to={data.url} key={data.name}>
+                    <MenuItem>
+                      {data.icon}
+                      {data.name}
+                    </MenuItem>
+                  </Link>
+                ))
+              : NavbarMenuList.menu_std.map((data) => (
+                  <Link to={data.url} key={data.name}>
+                    <MenuItem>
+                      {data.icon}
+                      {data.name}
+                    </MenuItem>
+                  </Link>
+                ))}
+            {/* {NavbarMenuList.menu_store_s.map((data) =>
+              data.divider ? (
+                <Divider borderColor="gray.600" key={data.name} />
+              ) : (
+                <Link to={data.url} key={data.name}>
+                  <MenuItem>
+                    {data.icon}
+                    {data.name}
+                  </MenuItem>
+                </Link>
+              )
+            )} */}
           </MenuList>
         </Menu>
       </Box>
@@ -132,8 +216,12 @@ function Navbar() {
               </>
             ) : (
               <>
-                <MenuItem>จัดการกล่อง</MenuItem>
-                <MenuItem>จัดการชั้น</MenuItem>
+                <MenuItem onClick={() => navigate("/box")}>
+                  จัดการกล่อง
+                </MenuItem>
+                <MenuItem onClick={() => navigate("/layer")}>
+                  จัดการชั้น
+                </MenuItem>
               </>
             )}
             <MenuDivider />

@@ -4,8 +4,8 @@ const config = {
   initialColorMode: "light",
   useSystemColorMode: false,
   fonts: {
-    body: `'Mitr', sans-serif`
-  }
+    body: `"Mitr", sans-serif`,
+  },
 };
 
 const theme = extendTheme({

@@ -25,7 +25,8 @@ const getAllZone = (req, res) => {
       return res.json(data);
     }
     throw new Error("เกิดข้อผิดพลาด ไม่พบข้อมูล");
-  });
+  })
+  .sort({zone: 1});
 };
 
 // Get one zone

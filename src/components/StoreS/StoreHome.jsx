@@ -117,31 +117,32 @@ function StoreSHome() {
   }
 
   function playZone(zone) {
-    console.log("play zone");
+    console.log("play zone", zone);
+    const audioSrc = `/src/assets/sounds/${zone}.mp3`;
 
     let audioZone = new Audio(zoneAudio),
-      numberZone = new Audio("../../assets/sounds/1.mp3");
+      numberZone = new Audio(audioSrc);
 
     setTimeout(() => {
       audioZone.play();
     }, 100);
     setTimeout(() => {
       numberZone.play();
-    }, 600);
+    }, 700);
   }
 
   function playChannel(channel) {
-    console.log("play channel");
+    console.log("play channel", channel);
 
     let audioChannel = new Audio(channelAudio),
-      numberChannel = new Audio("../../assets/sounds/1.mp3");
+      numberChannel = new Audio(`/src/assets/sounds/${channel}.mp3`);
 
     setTimeout(() => {
       audioChannel.play();
-    }, 100);
+    }, 1100);
     setTimeout(() => {
       numberChannel.play();
-    }, 600);
+    }, 1600);
   }
 
   function handleInputClear() {
@@ -153,6 +154,12 @@ function StoreSHome() {
     sethistoryList([]);
     localStorage.removeItem("historyScan");
     handleInputClear();
+    toast({
+      title: "ล้างประวัติการสแกนแล้ว",
+      status: "info",
+      isClosable: true,
+      duration: 2000,
+    });
   }
 
   return (

@@ -1,3 +1,4 @@
+import { DeleteIcon, PlusSquareIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
@@ -13,23 +14,23 @@ import {
   Tr,
   useToast,
 } from "@chakra-ui/react";
-import { DeleteIcon, PlusSquareIcon } from "@chakra-ui/icons";
-import React, { useEffect, useState } from "react";
 import axios from "axios";
+import moment from "moment/moment";
+import React, { useEffect } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { variables } from "../../Variables";
 import Navbar from "../Navbar/Navbar";
-import moment from "moment";
 
-function Channel() {
-  const [channelList, setchannelList] = useState([]);
+function StdBox() {
+  const [boxList, setboxList] = useState([]);
   const toast = useToast();
   const [isDeleted, setisDeleted] = useState(false);
 
   useEffect(() => {
-    axios.get(variables.API_URL + "channel").then((res) => {
+    axios.get(variables.API_URL + "box").then((res) => {
       console.log(res.data);
-      setchannelList(res.data);
+      setboxList(res.data);
     });
 
     return () => {
@@ -37,8 +38,8 @@ function Channel() {
     };
   }, [isDeleted]);
 
-  function handleDeleteChannel(ch_id) {
-    axios.delete(variables.API_URL + `channel/${ch_id}`).then((res) => {
+  function handleDeleteBox(box_id) {
+    axios.delete(variables.API_URL + `box/${box_id}`).then((res) => {
       toast({
         title: res.data.msg,
         status: "success",
@@ -61,14 +62,16 @@ function Channel() {
           borderBottom
           borderBottomWidth={2}
         >
-          <Heading size={"lg"}>จัดการช่อง</Heading>
-          <Link to={"/channel/create"}>
+          <Heading size={"lg"} color="gray.600">
+            จัดการกล่อง
+          </Heading>
+          <Link to={"/box/create"}>
             <Button
               leftIcon={<PlusSquareIcon />}
               variant="outline"
               colorScheme={"green"}
             >
-              เพิ่มช่อง
+              เพิ่มกล่อง
             </Button>
           </Link>
         </Flex>
@@ -77,17 +80,18 @@ function Channel() {
             <Thead>
               <Tr>
                 <Th>ลำดับ</Th>
-                <Th>ช่อง</Th>
+                <Th>กล่อง</Th>
                 <Th>วันที่สร้าง</Th>
                 <Th></Th>
               </Tr>
             </Thead>
             <Tbody>
-              {channelList
+              {boxList
+                .sort((a, b) => a.box - b.box)
                 .map((data, idx) => (
-                  <Tr key={data.ch}>
+                  <Tr key={data.box}>
                     <Td>{idx + 1}</Td>
-                    <Td>{data.ch}</Td>
+                    <Td>{data.box}</Td>
                     <Td>{moment(data.createdAt).format("DD/MM/YYYY HH:mm")}</Td>
                     <Td display="inline-block">
                       <DeleteIcon
@@ -95,7 +99,7 @@ function Channel() {
                         h={4}
                         color="red"
                         _hover={{ color: "red.300" }}
-                        onClick={() => handleDeleteChannel(data._id)}
+                        onClick={() => handleDeleteBox(data._id)}
                       />
                     </Td>
                   </Tr>
@@ -105,7 +109,7 @@ function Channel() {
         </TableContainer>
       </Container>
     </Box>
-  );
+  )
 }
 
-export default Channel;
+export default StdBox

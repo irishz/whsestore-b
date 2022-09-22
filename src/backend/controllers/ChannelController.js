@@ -25,7 +25,7 @@ const getAllChannel = (req, res) => {
       return res.json(data);
     }
     throw new Error("เกิดข้อผิดพลาด ไม่พบข้อมูล");
-  });
+  }).sort({ ch: 1 });
 };
 
 //Get one channel
@@ -65,6 +65,6 @@ module.exports = {
   createChannel,
   getAllChannel,
   getOneChannel,
-//   updateChannel,
+  //   updateChannel,
   deleteChannel,
 };

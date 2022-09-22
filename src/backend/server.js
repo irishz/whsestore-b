@@ -12,6 +12,8 @@ const channelRoute = require("./route/channel.routes");
 const locationRoute = require("./route/location.routes");
 const historyRoute = require("./route/history.routes");
 const departmentRoute = require("./route/department.routes");
+const boxRoute = require("./route/box.routes");
+const layerRoute = require("./route/layer.routes");
 // const matlRoute = require('./route/matl.routes');
 
 mongoose.Promise = global.Promise;
@@ -43,6 +45,8 @@ app.use("/channel", channelRoute);
 app.use("/location", locationRoute);
 app.use("/history", historyRoute);
 app.use("/department", departmentRoute);
+app.use("/box", boxRoute);
+app.use("/layer", layerRoute);
 
 app.listen(port, "0.0.0.0", () => {
   console.log("Connected to port " + port);

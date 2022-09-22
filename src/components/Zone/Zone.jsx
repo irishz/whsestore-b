@@ -9,7 +9,6 @@ import {
   TableContainer,
   Tbody,
   Td,
-  Text,
   Th,
   Thead,
   Tr,
@@ -63,7 +62,7 @@ function Zone() {
           borderBottom
           borderBottomWidth={2}
         >
-          <Heading size={"lg"}>
+          <Heading size={"lg"} color="gray.600">
             จัดการโซน
           </Heading>
           <Link to={"/zone/create"}>
@@ -88,7 +87,6 @@ function Zone() {
             </Thead>
             <Tbody>
               {zoneList
-                .sort((a, b) => a.zone - b.zone)
                 .map((data, idx) => (
                   <Tr key={data.zone}>
                     <Td>{idx + 1}</Td>
