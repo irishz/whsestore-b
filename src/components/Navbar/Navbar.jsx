@@ -63,7 +63,7 @@ function Navbar() {
       mb={5}
     >
       {/* Left Menu */}
-      <Box display={{ lg: "flex", xs: 'none' }} gap={3}>
+      <Box display={{ lg: "flex", sm: 'none' }} gap={3}>
         {programMode === "Store S"
           ? NavbarMenuList.menu_store_s.map((data) =>
               data.divider ? (
@@ -131,7 +131,7 @@ function Navbar() {
               </Link>
             ))}
       </Box>
-      <Box display={{ lg: "none", xs: "block" }}>
+      <Box display={{ lg: "none", sm: "block" }}>
         <Menu>
           <MenuButton
             as={IconButton}
