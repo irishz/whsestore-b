@@ -28,7 +28,7 @@ function Layer() {
   const [isDeleted, setisDeleted] = useState(false);
 
   useEffect(() => {
-    axios.get(variables.API_URL + "layer").then((res) => {
+    axios.get(`${variables.API_URL}/layer`).then((res) => {
       console.log(res.data);
       setlayerList(res.data);
     });
@@ -39,7 +39,7 @@ function Layer() {
   }, [isDeleted]);
 
   function handleDeleteLayer(layer_id) {
-    axios.delete(variables.API_URL + `layer/${layer_id}`).then((res) => {
+    axios.delete(`${variables.API_URL}/layer/${layer_id}`).then((res) => {
       toast({
         title: res.data.msg,
         status: "success",

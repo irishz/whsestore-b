@@ -32,7 +32,7 @@ function ChannelCreate() {
       const toast = useToast();
 
       function onsubmit(data) {
-        axios.post(variables.API_URL + "channel", data).then((res) => {
+        axios.post(`${variables.API_URL}/channel`, data).then((res) => {
           // console.log(res.data.msg);
           if (res.data.msg === "ช่องนี้มีในระบบอยู่แล้ว") {
             toast({

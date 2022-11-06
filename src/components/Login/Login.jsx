@@ -8,10 +8,8 @@ import {
   FormLabel,
   Heading,
   Input,
-  Select,
   Stack,
   StackItem,
-  Text,
   useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
@@ -21,7 +19,7 @@ import WhseImage from "../../assets/whse-img.jpg";
 import { useNavigate } from "react-router-dom";
 
 function Login(props) {
-  const [deptList, setdeptList] = useState([]);
+  const [isLoadingLogin, setisLoadingLogin] = useState(false);
   const {
     register,
     handleSubmit,
@@ -35,22 +33,12 @@ function Login(props) {
   const navigate = useNavigate();
   const toast = useToast();
 
-  useEffect(() => {
-    axios.get(variables.API_URL + "users").then((res) => {
-      console.log(res.data);
-      setdeptList(res.data);
-    });
-
-    // return () => {
-    //   setdeptList([]);
-    // };
-  }, []);
-
   const onsubmit = (data) => {
-    console.log(data);
-    axios.post(variables.API_URL + "users/login", data).then((res) => {
+    setisLoadingLogin(true);
+    axios.post(`${variables.API_URL}/users/login`, data).then((res) => {
       if (res.data.msg !== "Login User") {
         console.log(res.data.msg);
+        setisLoadingLogin(false);
         toast({
           title: "เกิดข้อผิดพลาด",
           description: res.data.msg,
@@ -60,6 +48,7 @@ function Login(props) {
         });
         return;
       }
+      setisLoadingLogin(false);
       const token = res.data.data.token;
       localStorage.setItem("token", token);
       props.setuserToken(token);
@@ -89,7 +78,6 @@ function Login(props) {
           bgColor={"whiteAlpha.900"}
           backdropFilter="auto"
           backdropBlur="2px"
-
           // bgGradient="linear(to-l, #7097A8, #D3E7EE)"
         >
           <StackItem mb={2} textAlign="center">
@@ -97,19 +85,17 @@ function Login(props) {
             <Heading color="gray.700">เข้าสู่ระบบ</Heading>
           </StackItem>
           <StackItem>
-            <Select
-              placeholder="เลือกแผนก"
-              {...register("name", { required: "กรุณาเลือกแผนก" })}
-              borderColor={errors.name ? "red" : "gray.400"}
-              color={errors.name ? "red" : null}
-            >
-              {deptList.map((data) => (
-                <option value={data.name} key={data._id}>
-                  {data.name}
-                </option>
-              ))}
-            </Select>
-            <Text color={"red"}>{errors.name?.message}</Text>
+            <FormControl>
+              <FormLabel>ชื่อผู้ใช้งาน</FormLabel>
+              <Input
+                type={"text"}
+                {...register("name", { required: "กรุณาใส่ชื่อผู้ใช้งาน" })}
+                borderColor={errors.password ? "red" : "gray.400"}
+              />
+              <FormHelperText color={"red"}>
+                {errors?.name?.message}
+              </FormHelperText>
+            </FormControl>
           </StackItem>
           <StackItem>
             <FormControl>
@@ -138,6 +124,8 @@ function Login(props) {
               bgColor="#7097A8"
               color={"white"}
               _hover={{ color: "gray.700", bgColor: "gray.200" }}
+              loadingText="กำลังเข้าสู่ระบบ"
+              isLoading={isLoadingLogin}
             >
               เข้าสู่ระบบ
             </Button>

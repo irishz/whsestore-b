@@ -24,6 +24,10 @@ const NavbarMenuList = {
       divider: true,
       url: "#",
     },
+    {
+      name: "Check Onhand",
+      url: `${base_url_store_s}/check-onhand`,
+    },
   ],
   menu_store_b: [
     {
@@ -46,6 +50,10 @@ const NavbarMenuList = {
     {
       name: "ตรวจสอบการจ่าย Matl",
       url: `${base_url_store_b}/check-matlissue`,
+    },
+    {
+      name: "ประวัติการจ่าย Matl",
+      url: `${base_url_store_b}/matltrans`,
     },
   ],
   menu_std: [

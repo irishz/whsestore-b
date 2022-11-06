@@ -66,14 +66,14 @@ function CreateLocation() {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
-    axios.get(variables.API_URL + "location").then((res) => {
+    axios.get(`${variables.API_URL}/location`).then((res) => {
       setlocList(res.data);
     });
-    axios.get(variables.API_URL + "zone").then((res) => {
+    axios.get(`${variables.API_URL}/zone`).then((res) => {
       setzoneList(res.data);
     });
 
-    axios.get(variables.API_URL + "channel").then((res) => {
+    axios.get(`${variables.API_URL}/channel`).then((res) => {
       setchannelList(res.data);
     });
   }, []);
@@ -124,10 +124,10 @@ function CreateLocation() {
     let count = 0;
     setisLoading(true);
     scanjobList.forEach((data) => {
-      axios.post(variables.API_URL + "location", data, {
+      axios.post(`${variables.API_URL}/location`, data, {
         onUploadProgress: () => {
           count++;
-          const progressPercent = (count / previewList.length) * 100;
+          const progressPercent = (count / scanjobList.length) * 100;
           setprogress(progressPercent);
         },
       });

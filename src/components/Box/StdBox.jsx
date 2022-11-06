@@ -28,7 +28,7 @@ function StdBox() {
   const [isDeleted, setisDeleted] = useState(false);
 
   useEffect(() => {
-    axios.get(variables.API_URL + "box").then((res) => {
+    axios.get(`${variables.API_URL}/box`).then((res) => {
       console.log(res.data);
       setboxList(res.data);
     });
@@ -39,7 +39,7 @@ function StdBox() {
   }, [isDeleted]);
 
   function handleDeleteBox(box_id) {
-    axios.delete(variables.API_URL + `box/${box_id}`).then((res) => {
+    axios.delete(`${variables.API_URL}/box/${box_id}`).then((res) => {
       toast({
         title: res.data.msg,
         status: "success",

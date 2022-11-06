@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "type": "commonjs",
   "scripts": {
-    "dev": "vite",
+    "dev": "concurrently \"vite --host 0.0.0.0\" \"cd src && cd backend && nodemon -r dotenv/config server.js\"",
+    "vite-dev": "vite --host 0.0.0.0",
     "build": "vite build",
     "preview": "vite preview",
     "server": "cd src && cd backend && nodemon -r dotenv/config server.js"
@@ -15,9 +16,11 @@
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
     "@fontsource/mitr": "^4.5.9",
+    "@fontsource/noto-sans-thai": "^4.5.12",
     "axios": "^0.27.2",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.0",
+    "concurrently": "^7.5.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.2",
     "express": "^4.18.1",

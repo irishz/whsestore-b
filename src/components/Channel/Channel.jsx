@@ -27,7 +27,7 @@ function Channel() {
   const [isDeleted, setisDeleted] = useState(false);
 
   useEffect(() => {
-    axios.get(variables.API_URL + "channel").then((res) => {
+    axios.get(`${variables.API_URL}/channel`).then((res) => {
       console.log(res.data);
       setchannelList(res.data);
     });
@@ -38,7 +38,7 @@ function Channel() {
   }, [isDeleted]);
 
   function handleDeleteChannel(ch_id) {
-    axios.delete(variables.API_URL + `channel/${ch_id}`).then((res) => {
+    axios.delete(`${variables.API_URL}/channel/${ch_id}`).then((res) => {
       toast({
         title: res.data.msg,
         status: "success",

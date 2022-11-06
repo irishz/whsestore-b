@@ -28,7 +28,7 @@ function Zone() {
   const [isDeleted, setisDeleted] = useState(false);
 
   useEffect(() => {
-    axios.get(variables.API_URL + "zone").then((res) => {
+    axios.get(`${variables.API_URL}/zone`).then((res) => {
       console.log(res.data);
       setzoneList(res.data);
     });
@@ -39,7 +39,7 @@ function Zone() {
   }, [isDeleted]);
 
   function handleDeleteZone(zone_id) {
-    axios.delete(variables.API_URL + `zone/${zone_id}`).then((res) => {
+    axios.delete(`${variables.API_URL}/zone/${zone_id}`).then((res) => {
       toast({
         title: res.data.msg,
         status: "success",

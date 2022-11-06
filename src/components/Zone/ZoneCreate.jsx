@@ -32,7 +32,7 @@ function ZoneCreate() {
   const toast = useToast();
 
   function onsubmit(data) {
-    axios.post(variables.API_URL + "zone", data).then((res) => {
+    axios.post(`${variables.API_URL}/zone`, data).then((res) => {
       // console.log(res.data.msg);
       if (res.data.msg === "zone นี้มีในระบบอยู่แล้ว") {
         toast({

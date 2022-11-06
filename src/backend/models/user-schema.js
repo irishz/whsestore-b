@@ -15,7 +15,6 @@ const userSchema = new Schema({
     },
     password: {
         type: String,
-        min: [6, "รหัสผ่านขั้นต่ำ 6 ตัว"]
     }
 }, {
         timestamps: true,

@@ -25,10 +25,7 @@ const registerUser = asyncHandler(async (req, res) => {
   if (user) {
     res.status(201).json({
       msg: "เพิ่มผู้ใช้สำเร็จ",
-      data: {
-        _id: user.id,
-        name: user.name,
-      },
+      data: user,
     });
   } else {
     res.status(400).json({

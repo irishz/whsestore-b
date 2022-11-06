@@ -6,6 +6,7 @@ let historySchema = new Schema({
         type: String
     },
 }, {
+        timestamps: true,
         collection: 'history'
     })
 

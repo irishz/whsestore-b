@@ -51,13 +51,13 @@ function StoreSHome() {
   const toast = useToast();
 
   useEffect(() => {
-    axios.get(variables.API_URL + "location").then((res) => {
+    axios.get(`${variables.API_URL}/location`).then((res) => {
       setlocList(res.data);
     });
-    axios.get(variables.API_URL + "zone").then((res) => {
+    axios.get(`${variables.API_URL}/zone`).then((res) => {
       setzoneList(res.data);
     });
-    axios.get(variables.API_URL + "channel").then((res) => {
+    axios.get(`${variables.API_URL}/channel`).then((res) => {
       setchList(res.data);
     });
 

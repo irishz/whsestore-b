@@ -35,7 +35,7 @@ function Navbar() {
     const userTokenDecoded = jwtDecode(authCtx.userToken);
 
     axios
-      .get(variables.API_URL + `users/${userTokenDecoded.id}`, {
+      .get(`${variables.API_URL}/users/${userTokenDecoded.id}`, {
         headers: {
           Authorization: `Bearer ${authCtx.userToken}`,
         },
@@ -63,7 +63,7 @@ function Navbar() {
       mb={5}
     >
       {/* Left Menu */}
-      <Box display={{ lg: "flex", sm: 'none' }} gap={3}>
+      <Box display={{ base: "none", lg: "flex", sm: "none" }} gap={3}>
         {programMode === "Store S"
           ? NavbarMenuList.menu_store_s.map((data) =>
               data.divider ? (
@@ -84,7 +84,6 @@ function Navbar() {
                       color: "#ECD59F",
                       borderBottomColor: "#ECD59F",
                       borderBottomWidth: 1,
-                      pb: 1,
                     }}
                   >
                     {data.icon}
@@ -131,7 +130,7 @@ function Navbar() {
               </Link>
             ))}
       </Box>
-      <Box display={{ lg: "none", sm: "block" }}>
+      <Box display={{ base: "block", lg: "none", sm: "block" }}>
         <Menu>
           <MenuButton
             as={IconButton}

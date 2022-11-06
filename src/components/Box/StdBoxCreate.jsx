@@ -32,7 +32,7 @@ function StdBoxCreate() {
   const toast = useToast();
 
   function onsubmit(data) {
-    axios.post(variables.API_URL + "box", data).then((res) => {
+    axios.post(`${variables.API_URL}/box`, data).then((res) => {
       // console.log(res.data.msg);
       if (res.data.msg === "กล่องนี้มีในระบบอยู่แล้ว") {
         toast({

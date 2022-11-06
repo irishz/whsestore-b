@@ -14,7 +14,7 @@ const historyRoute = require("./route/history.routes");
 const departmentRoute = require("./route/department.routes");
 const boxRoute = require("./route/box.routes");
 const layerRoute = require("./route/layer.routes");
-// const matlRoute = require('./route/matl.routes');
+const jobTransRoute = require('./route/jobtrans.routes');
 
 mongoose.Promise = global.Promise;
 mongoose
@@ -47,6 +47,7 @@ app.use("/history", historyRoute);
 app.use("/department", departmentRoute);
 app.use("/box", boxRoute);
 app.use("/layer", layerRoute);
+app.use("/jobtrans", jobTransRoute);
 
 app.listen(port, "0.0.0.0", () => {
   console.log("Connected to port " + port);

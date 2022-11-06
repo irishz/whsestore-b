@@ -47,7 +47,7 @@ function DeleteLocation() {
       sethistoryList(JSON.parse(histList));
     }
 
-    axios.get(variables.API_URL + "location").then((res) => {
+    axios.get(`${variables.API_URL}/location`).then((res) => {
       let tempList = [];
       tempList = res.data;
       tempList = tempList.filter((data) => histList.includes(data.job));
@@ -68,10 +68,10 @@ function DeleteLocation() {
     let count = 0;
     setisUploading(true);
     locFilterList.forEach((data) => {
-      axios.delete(variables.API_URL + `location/${data._id}`, {
+      axios.delete(`${variables.API_URL}/location/${data._id}`, {
         onUploadProgress: () => {
           count++;
-          const progressPercent = (count / previewList.length) * 100;
+          const progressPercent = (count / locFilterList.length) * 100;
           setprogress(progressPercent);
         },
       });

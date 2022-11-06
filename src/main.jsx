@@ -4,7 +4,7 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import theme from "./theme";
 import { BrowserRouter } from "react-router-dom";
-import "@fontsource/mitr/400.css";
+import "@fontsource/noto-sans-thai";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>

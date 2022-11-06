@@ -15,7 +15,7 @@ let locationSchema = new Schema({
         type: String
     }
 }, {
-        timestamps: { currentTime: () => Date() },
+        timestamps: true,
         collection: 'location'
     })
 

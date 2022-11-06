@@ -32,7 +32,7 @@ function LayerCreate() {
     const toast = useToast();
 
     function onsubmit(data) {
-      axios.post(variables.API_URL + "layer", data).then((res) => {
+      axios.post(`${variables.API_URL}/layer`, data).then((res) => {
         // console.log(res.data.msg);
         if (res.data.msg === "ชั้นนี้มีในระบบอยู่แล้ว") {
           toast({
