@@ -30,10 +30,10 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { variables } from "../../Variables";
 import Navbar from "../Navbar/Navbar";
 
 function DeleteLocation() {
+  const API_URL = import.meta.env.VITE_API_URL;
   const [historyList, sethistoryList] = useState([]);
   const [locFilterList, setlocFilterList] = useState([]);
   const [progress, setprogress] = useState(0);
@@ -47,7 +47,7 @@ function DeleteLocation() {
       sethistoryList(JSON.parse(histList));
     }
 
-    axios.get(`${variables.API_URL}/location`).then((res) => {
+    axios.get(`${API_URL}/location`).then((res) => {
       let tempList = [];
       tempList = res.data;
       tempList = tempList.filter((data) => histList.includes(data.job));
@@ -68,7 +68,7 @@ function DeleteLocation() {
     let count = 0;
     setisUploading(true);
     locFilterList.forEach((data) => {
-      axios.delete(`${variables.API_URL}/location/${data._id}`, {
+      axios.delete(`${API_URL}/location/${data._id}`, {
         onUploadProgress: () => {
           count++;
           const progressPercent = (count / locFilterList.length) * 100;

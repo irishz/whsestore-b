@@ -24,11 +24,11 @@ import CheckMatlIssue from "./components/StoreB/CheckMatlIssue";
 import UserCreate from "./components/User/UserCreate";
 import axios from "axios";
 import jwtDecode from "jwt-decode";
-import { variables } from "./Variables";
 import MatlTrans from "./components/StoreB/MatlTrans";
 import CheckOnhand from "./components/StoreS/CheckOnhand";
 
 function App() {
+  const API_URL = import.meta.env.VITE_API_URL;
   const [userToken, setuserToken] = useState(localStorage.getItem("token"));
   const [userData, setuserData] = useState({});
 
@@ -37,7 +37,7 @@ function App() {
     if (userToken) {
     const userTokenDecoded = jwtDecode(userToken)
       axios
-      .get(`${variables.API_URL}/users/${userTokenDecoded.id}`, {
+      .get(`${API_URL}/users/${userTokenDecoded.id}`, {
         headers: {
           Authorization: `Bearer ${userToken}`,
         },

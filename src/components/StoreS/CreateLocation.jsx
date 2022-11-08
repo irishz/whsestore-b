@@ -47,33 +47,32 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
-import { variables } from "../../Variables";
 import Navbar from "../Navbar/Navbar";
 import { BiPlus } from "react-icons/bi";
+import { useNavigate } from "react-router-dom";
 
 function CreateLocation() {
+  const API_URL = import.meta.env.VITE_API_URL;
   const [zoneList, setzoneList] = useState([]);
   const [locList, setlocList] = useState([]);
   const [channelList, setchannelList] = useState([]);
   const [scanjobList, setscanjobList] = useState([]);
   const [selectedZone, setselectedZone] = useState(0);
   const [selectedChannel, setselectedChannel] = useState(0);
-  const [scanInputErrMsg, setscanInputErrMsg] = useState("");
-  const [progress, setprogress] = useState(0);
   const [isLoading, setisLoading] = useState(false);
   let inputRef = useRef();
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
-    axios.get(`${variables.API_URL}/location`).then((res) => {
+    axios.get(`${API_URL}/location`).then((res) => {
       setlocList(res.data);
     });
-    axios.get(`${variables.API_URL}/zone`).then((res) => {
+    axios.get(`${API_URL}/zone`).then((res) => {
       setzoneList(res.data);
     });
 
-    axios.get(`${variables.API_URL}/channel`).then((res) => {
+    axios.get(`${API_URL}/channel`).then((res) => {
       setchannelList(res.data);
     });
   }, []);
@@ -124,25 +123,39 @@ function CreateLocation() {
     let count = 0;
     setisLoading(true);
     scanjobList.forEach((data) => {
-      axios.post(`${variables.API_URL}/location`, data, {
-        onUploadProgress: () => {
-          count++;
-          const progressPercent = (count / scanjobList.length) * 100;
-          setprogress(progressPercent);
-        },
-      });
-
-      console.log(progress);
-      if (progress === 100) {
-        onClose();
-        toast({
-          title: "เพิ่มข้อมูลใหม่สำเร็จ",
-          status: "success",
-          duration: 3000,
+      axios
+        .post(`${API_URL}/location`, data)
+        .then((res) => {
+          if ((res.status = 200)) {
+            onClose();
+            toast({
+              title: "เพิ่มข้อมูลใหม่สำเร็จ",
+              status: "success",
+              duration: 3000,
+            });
+            setisLoading(false);
+            setscanjobList([]);
+            setselectedZone(0);
+            setselectedChannel(0);
+            inputRef.current.value = "";
+            return;
+          }
+        })
+        .catch((err) => {
+          if (err) {
+            onClose();
+            toast({
+              title: "เกิดข้อผิดพลาด",
+              description:
+                "ไม่สามารถเพิ่มข้อมูล กรุณาตรวจสอบข้อมูลและลองทำใหม่อีกครั้ง",
+              status: "error",
+              duration: 3000,
+            });
+            setisLoading(false);
+            setscanjobList([]);
+            return;
+          }
         });
-        setisLoading(false);
-        setscanjobList([]);
-      }
     });
   }
 

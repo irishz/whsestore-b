@@ -21,7 +21,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { BsPersonPlusFill } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
-import { variables } from "../../Variables";
 import Navbar from "../Navbar/Navbar";
 
 function UserCreate() {
@@ -31,7 +30,7 @@ function UserCreate() {
   const navigate = useNavigate();
   const toast = useToast();
   useEffect(() => {
-    axios.get(`${variables.API_URL}/department`).then((res) => {
+    axios.get(`${API_URL}/department`).then((res) => {
       if (res.data) {
         setdeptList(res.data);
         setisLoading(false);
@@ -55,7 +54,7 @@ function UserCreate() {
     setisBtnLoading(true);
     data.password = "123123";
     console.log(data);
-    axios.post(`${variables.API_URL}/users`, data).then((res) => {
+    axios.post(`${API_URL}/users`, data).then((res) => {
        const {msg} = res.data
       if (res.status === 201) {
         setisBtnLoading(false);

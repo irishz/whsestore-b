@@ -15,11 +15,11 @@ import {
   import React from "react";
   import { useForm } from "react-hook-form";
   import { useNavigate } from "react-router-dom";
-  import { variables } from "../../Variables";
   import Navbar from "../Navbar/Navbar";
 
 function StdBoxCreate() {
-    const navigate = useNavigate();
+  const API_URL = import.meta.env.VITE_API_URL;
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -32,7 +32,7 @@ function StdBoxCreate() {
   const toast = useToast();
 
   function onsubmit(data) {
-    axios.post(`${variables.API_URL}/box`, data).then((res) => {
+    axios.post(`${API_URL}/box`, data).then((res) => {
       // console.log(res.data.msg);
       if (res.data.msg === "กล่องนี้มีในระบบอยู่แล้ว") {
         toast({

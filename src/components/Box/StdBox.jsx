@@ -19,17 +19,16 @@ import moment from "moment/moment";
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { variables } from "../../Variables";
 import Navbar from "../Navbar/Navbar";
 
 function StdBox() {
+  const API_URL = import.meta.env.VITE_API_URL;
   const [boxList, setboxList] = useState([]);
   const toast = useToast();
   const [isDeleted, setisDeleted] = useState(false);
 
   useEffect(() => {
-    axios.get(`${variables.API_URL}/box`).then((res) => {
-      console.log(res.data);
+    axios.get(`${API_URL}/box`).then((res) => {
       setboxList(res.data);
     });
 
@@ -39,7 +38,7 @@ function StdBox() {
   }, [isDeleted]);
 
   function handleDeleteBox(box_id) {
-    axios.delete(`${variables.API_URL}/box/${box_id}`).then((res) => {
+    axios.delete(`${API_URL}/box/${box_id}`).then((res) => {
       toast({
         title: res.data.msg,
         status: "success",

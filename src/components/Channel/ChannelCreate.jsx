@@ -15,7 +15,6 @@ import {
   import axios from "axios";
   import { useForm } from "react-hook-form";
   import { useNavigate } from "react-router-dom";
-  import { variables } from "../../Variables";
 import Navbar from "../Navbar/Navbar";
 
 function ChannelCreate() {
@@ -32,7 +31,7 @@ function ChannelCreate() {
       const toast = useToast();
 
       function onsubmit(data) {
-        axios.post(`${variables.API_URL}/channel`, data).then((res) => {
+        axios.post(`${API_URL}/channel`, data).then((res) => {
           // console.log(res.data.msg);
           if (res.data.msg === "ช่องนี้มีในระบบอยู่แล้ว") {
             toast({

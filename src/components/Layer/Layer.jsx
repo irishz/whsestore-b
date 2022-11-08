@@ -19,7 +19,6 @@ import moment from "moment/moment";
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { variables } from "../../Variables";
 import Navbar from "../Navbar/Navbar";
 
 function Layer() {
@@ -28,7 +27,7 @@ function Layer() {
   const [isDeleted, setisDeleted] = useState(false);
 
   useEffect(() => {
-    axios.get(`${variables.API_URL}/layer`).then((res) => {
+    axios.get(`${API_URL}/layer`).then((res) => {
       console.log(res.data);
       setlayerList(res.data);
     });
@@ -39,7 +38,7 @@ function Layer() {
   }, [isDeleted]);
 
   function handleDeleteLayer(layer_id) {
-    axios.delete(`${variables.API_URL}/layer/${layer_id}`).then((res) => {
+    axios.delete(`${API_URL}/layer/${layer_id}`).then((res) => {
       toast({
         title: res.data.msg,
         status: "success",

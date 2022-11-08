@@ -19,7 +19,6 @@ import moment from "moment/moment";
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { variables } from "../../Variables";
 import Navbar from "../Navbar/Navbar";
 
 function Zone() {
@@ -28,7 +27,7 @@ function Zone() {
   const [isDeleted, setisDeleted] = useState(false);
 
   useEffect(() => {
-    axios.get(`${variables.API_URL}/zone`).then((res) => {
+    axios.get(`${API_URL}/zone`).then((res) => {
       console.log(res.data);
       setzoneList(res.data);
     });
@@ -39,7 +38,7 @@ function Zone() {
   }, [isDeleted]);
 
   function handleDeleteZone(zone_id) {
-    axios.delete(`${variables.API_URL}/zone/${zone_id}`).then((res) => {
+    axios.delete(`${API_URL}/zone/${zone_id}`).then((res) => {
       toast({
         title: res.data.msg,
         status: "success",

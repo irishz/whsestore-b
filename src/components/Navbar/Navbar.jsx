@@ -17,13 +17,13 @@ import jwtDecode from "jwt-decode";
 import React, { useContext, useEffect, useState } from "react";
 import { RiLogoutBoxLine } from "react-icons/ri";
 import AuthContext from "../../Context/AuthContext";
-import { variables } from "../../Variables";
 import { ChevronDownIcon, HamburgerIcon } from "@chakra-ui/icons";
 import { Link, useNavigate } from "react-router-dom";
 import { BsFillPersonFill } from "react-icons/bs";
 import NavbarMenuList from "./NavbarData";
 
 function Navbar() {
+  const API_URL = import.meta.env.VITE_API_URL;
   const authCtx = useContext(AuthContext);
   const [userData, setuserData] = useState({});
   const [programMode, setprogramMode] = useState(
@@ -35,7 +35,7 @@ function Navbar() {
     const userTokenDecoded = jwtDecode(authCtx.userToken);
 
     axios
-      .get(`${variables.API_URL}/users/${userTokenDecoded.id}`, {
+      .get(`${API_URL}/users/${userTokenDecoded.id}`, {
         headers: {
           Authorization: `Bearer ${authCtx.userToken}`,
         },

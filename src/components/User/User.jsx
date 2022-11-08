@@ -18,7 +18,6 @@ import Navbar from "../Navbar/Navbar";
 import { BsPersonFill } from "react-icons/bs";
 import { DeleteIcon, EditIcon, PlusSquareIcon } from "@chakra-ui/icons";
 import axios from "axios";
-import { variables } from "../../Variables";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 
@@ -26,7 +25,7 @@ function User() {
   const [userList, setuserList] = useState([]);
 const navigate = useNavigate()
   useEffect(() => {
-    axios.get(`${variables.API_URL}/users`).then((res) => {
+    axios.get(`${API_URL}/users`).then((res) => {
       setuserList(res.data);
     });
   }, []);

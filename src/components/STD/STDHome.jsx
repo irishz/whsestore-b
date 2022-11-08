@@ -7,11 +7,9 @@ import {
   Badge,
   Box,
   Button,
-  color,
   Container,
   Flex,
   FormControl,
-  FormHelperText,
   FormLabel,
   Grid,
   GridItem,
@@ -19,7 +17,6 @@ import {
   Input,
   InputGroup,
   InputRightAddon,
-  List,
   ListItem,
   OrderedList,
   Spacer,
@@ -29,9 +26,10 @@ import {
   TabPanels,
   Tabs,
   Text,
-  useToast,
 } from "@chakra-ui/react";
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../Navbar/Navbar";
 function STDHome() {
@@ -40,15 +38,18 @@ function STDHome() {
   const [locList, setlocList] = useState([]);
   const [boxList, setboxList] = useState([]);
   const [layerList, setlayerList] = useState([]);
-
+  const inputRef = useRef();
+  const API_URL = import.meta.env.VITE_API_URL
+  console.log(API_URL)
+  
   useEffect(() => {
-    axios.get(`${variables.API_URL}/location`).then((res) => {
+    axios.get(`${API_URL}/location`).then((res) => {
       setlocList(res.data);
     });
-    axios.get(`${variables.API_URL}/box`).then((res) => {
+    axios.get(`${API_URL}/box`).then((res) => {
       setboxList(res.data);
     });
-    axios.get(`${variables.API_URL}/layer`).then((res) => {
+    axios.get(`${API_URL}/layer`).then((res) => {
       setlayerList(res.data);
     });
 
@@ -60,7 +61,7 @@ function STDHome() {
 
     return () => {
       setlocList([]);
-      setzoneList([]);
+      setboxList([]);
       setchList([]);
     };
   }, []);
@@ -128,7 +129,7 @@ function STDHome() {
                   justifyContent={"center"}
                   alignItems="center"
                 >
-                  <Heading fontSize={96}>{loc.zone}</Heading>
+                  <Heading fontSize={96}>{loc.box}</Heading>
                   <Text>โซน</Text>
                 </Flex>
                 <Flex
@@ -197,21 +198,21 @@ function STDHome() {
           <Box>
             <Tabs isFitted variant={"enclosed"}>
               <TabList>
-                {zoneList
-                  .sort((a, b) => a.zone - b.zone)
-                  .map((zone) =>
-                    zone.zone === 99 ? (
-                      <Tab key={zone.zone}>อื่นๆ</Tab>
+                {boxList
+                  .sort((a, b) => a.box - b.box)
+                  .map((box) =>
+                    box.box === 99 ? (
+                      <Tab key={box.box}>อื่นๆ</Tab>
                     ) : (
-                      <Tab key={zone.zone}>Zone {zone.zone}</Tab>
+                      <Tab key={box.box}>box {box.box}</Tab>
                     )
                   )}
               </TabList>
               <TabPanels>
-                {zoneList
-                  .sort((a, b) => a.zone - b.zone)
-                  .map((zone) => (
-                    <TabPanel key={zone.zone}>
+                {boxList
+                  .sort((a, b) => a.box - b.box)
+                  .map((box) => (
+                    <TabPanel key={box.box}>
                       <Accordion>
                         <Grid
                           templateColumns={{
@@ -242,7 +243,7 @@ function STDHome() {
                                       colorScheme="blue"
                                     >
                                       {
-                                        renderLocationData(zone.zone, ch.ch)
+                                        renderLocationData(box.box, ch.ch)
                                           .length
                                       }
                                     </Badge>
@@ -252,7 +253,7 @@ function STDHome() {
                               </h2>
                               <GridItem>
                                 <AccordionPanel bgColor={"gray.100"}>
-                                  {renderLocationData(zone.zone, ch.ch).map(
+                                  {renderLocationData(box.box, ch.ch).map(
                                     (loc) => (
                                       <Flex mt={1} key={loc.job}>
                                         <Text>{loc.job}</Text>

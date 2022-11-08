@@ -2,7 +2,10 @@ let express = require("express");
 let mongoose = require("mongoose");
 let cors = require("cors");
 let bodyParser = require("body-parser");
-const dotenv = require("dotenv").config();
+const dotenv = require("dotenv");
+
+dotenv.config()
+
 let port = process.env.PORT;
 // let database = require('./db');
 

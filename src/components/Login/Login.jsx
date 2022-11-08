@@ -13,12 +13,12 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
-import { variables } from "../../Variables";
 import { useForm } from "react-hook-form";
 import WhseImage from "../../assets/whse-img.jpg";
 import { useNavigate } from "react-router-dom";
 
 function Login(props) {
+  const API_URL = import.meta.env.VITE_API_URL
   const [isLoadingLogin, setisLoadingLogin] = useState(false);
   const {
     register,
@@ -35,7 +35,7 @@ function Login(props) {
 
   const onsubmit = (data) => {
     setisLoadingLogin(true);
-    axios.post(`${variables.API_URL}/users/login`, data).then((res) => {
+    axios.post(`${API_URL}/users/login`, data).then((res) => {
       if (res.data.msg !== "Login User") {
         console.log(res.data.msg);
         setisLoadingLogin(false);
@@ -88,6 +88,7 @@ function Login(props) {
             <FormControl>
               <FormLabel>ชื่อผู้ใช้งาน</FormLabel>
               <Input
+                autoFocus
                 type={"text"}
                 {...register("name", { required: "กรุณาใส่ชื่อผู้ใช้งาน" })}
                 borderColor={errors.password ? "red" : "gray.400"}

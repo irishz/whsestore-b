@@ -34,7 +34,6 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
-import { variables } from "../../Variables";
 import Navbar from "../Navbar/Navbar";
 import { RiRefreshLine } from "react-icons/ri";
 import { DeleteIcon } from "@chakra-ui/icons";
@@ -42,6 +41,7 @@ import zoneAudio from "../../assets/sounds/zone.mp3";
 import channelAudio from "../../assets/sounds/channel.mp3";
 
 function StoreSHome() {
+  const API_URL = import.meta.env.VITE_API_URL;
   const [scanInput, setscanInput] = useState("");
   const [locList, setlocList] = useState([]);
   const [zoneList, setzoneList] = useState([]);
@@ -51,13 +51,13 @@ function StoreSHome() {
   const toast = useToast();
 
   useEffect(() => {
-    axios.get(`${variables.API_URL}/location`).then((res) => {
+    axios.get(`${API_URL}/location`).then((res) => {
       setlocList(res.data);
     });
-    axios.get(`${variables.API_URL}/zone`).then((res) => {
+    axios.get(`${API_URL}/zone`).then((res) => {
       setzoneList(res.data);
     });
-    axios.get(`${variables.API_URL}/channel`).then((res) => {
+    axios.get(`${API_URL}/channel`).then((res) => {
       setchList(res.data);
     });
 

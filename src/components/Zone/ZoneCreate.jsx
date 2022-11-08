@@ -15,7 +15,6 @@ import axios from "axios";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { variables } from "../../Variables";
 import Navbar from "../Navbar/Navbar";
 
 function ZoneCreate() {
@@ -32,7 +31,7 @@ function ZoneCreate() {
   const toast = useToast();
 
   function onsubmit(data) {
-    axios.post(`${variables.API_URL}/zone`, data).then((res) => {
+    axios.post(`${API_URL}/zone`, data).then((res) => {
       // console.log(res.data.msg);
       if (res.data.msg === "zone นี้มีในระบบอยู่แล้ว") {
         toast({

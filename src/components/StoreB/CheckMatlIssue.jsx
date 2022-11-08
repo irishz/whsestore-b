@@ -27,7 +27,6 @@ import Navbar from "../Navbar/Navbar";
 import { MdRefresh, MdSave } from "react-icons/md";
 import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
 import AuthContext from "../../Context/AuthContext";
-import { variables } from "../../Variables";
 
 function CheckMatlIssue() {
   const [jobMatlList, setjobMatlList] = useState([]);
@@ -120,7 +119,7 @@ function CheckMatlIssue() {
       created_by: authCtx.userData?._id,
     };
     axios
-      .post(`${variables.API_URL}/jobtrans/`, jobTransObj)
+      .post(`${API_URL}/jobtrans/`, jobTransObj)
       .then((res) => {
         handleResetBtnClick()
         toast({

@@ -17,17 +17,17 @@ import { DeleteIcon, PlusSquareIcon } from "@chakra-ui/icons";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { variables } from "../../Variables";
 import Navbar from "../Navbar/Navbar";
 import moment from "moment";
 
 function Channel() {
+  const API_URL = import.meta.env.VITE_API_URL;
   const [channelList, setchannelList] = useState([]);
   const toast = useToast();
   const [isDeleted, setisDeleted] = useState(false);
 
   useEffect(() => {
-    axios.get(`${variables.API_URL}/channel`).then((res) => {
+    axios.get(`${API_URL}/channel`).then((res) => {
       console.log(res.data);
       setchannelList(res.data);
     });
@@ -38,7 +38,7 @@ function Channel() {
   }, [isDeleted]);
 
   function handleDeleteChannel(ch_id) {
-    axios.delete(`${variables.API_URL}/channel/${ch_id}`).then((res) => {
+    axios.delete(`${API_URL}/channel/${ch_id}`).then((res) => {
       toast({
         title: res.data.msg,
         status: "success",

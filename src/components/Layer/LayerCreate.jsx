@@ -15,7 +15,6 @@ import {
   import React from "react";
   import { useForm } from "react-hook-form";
   import { useNavigate } from "react-router-dom";
-  import { variables } from "../../Variables";
   import Navbar from "../Navbar/Navbar";
 
 function LayerCreate() {
@@ -32,7 +31,7 @@ function LayerCreate() {
     const toast = useToast();
 
     function onsubmit(data) {
-      axios.post(`${variables.API_URL}/layer`, data).then((res) => {
+      axios.post(`${API_URL}/layer`, data).then((res) => {
         // console.log(res.data.msg);
         if (res.data.msg === "ชั้นนี้มีในระบบอยู่แล้ว") {
           toast({

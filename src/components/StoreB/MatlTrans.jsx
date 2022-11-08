@@ -23,11 +23,11 @@ import React, { useMemo, useState } from "react";
 import Navbar from "../Navbar/Navbar";
 import moment from "moment";
 import axios from "axios";
-import { variables } from "../../Variables";
 import { SearchIcon } from "@chakra-ui/icons";
 import "moment/dist/locale/th";
 
 function MatlTrans() {
+  const API_URL = import.meta.env.VITE_API_URL;
   const [start_date, setstart_date] = useState(moment().format("YYYY-MM-DD"));
   const [end_date, setend_date] = useState(moment().format("YYYY-MM-DD"));
   const [job, setjob] = useState("");
@@ -52,7 +52,7 @@ function MatlTrans() {
     await axios
       .get(
         `${
-          variables.API_URL
+          API_URL
         }/jobtrans/history/?job=${job}&start_date=${start_date}&end_date=${moment(
           end_date
         )
