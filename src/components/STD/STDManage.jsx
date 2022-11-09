@@ -32,6 +32,7 @@ import Navbar from "../Navbar/Navbar";
 import axios from "axios";
 import moment from "moment";
 import { CloseIcon, DeleteIcon, EditIcon, SearchIcon } from "@chakra-ui/icons";
+import { useNavigate } from "react-router-dom";
 
 function STDManage() {
   const API_URL = import.meta.env.VITE_API_URL;
@@ -42,6 +43,7 @@ function STDManage() {
   const searchInputRef = useRef();
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const navigate = useNavigate()
 
   useEffect(() => {
     axios.get(`${API_URL}/location-std`).then((res) => {
@@ -68,7 +70,13 @@ function STDManage() {
     }
   }
 
-  function handleEditIconClick(id) {}
+  function handleEditIconClick(id) {
+    let item = locStdList.find(({_id}) => _id ===id)
+    if (item) {
+      navigate('/std/edit', {state: item})
+    }
+  }
+  
   function handleDeleteIconClick() {
     setisDeleted(true);
     onClose();

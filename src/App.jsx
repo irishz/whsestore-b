@@ -28,6 +28,7 @@ import MatlTrans from "./components/StoreB/MatlTrans";
 import CheckOnhand from "./components/StoreS/CheckOnhand";
 import STDCreate from "./components/STD/STDCreate";
 import STDManage from "./components/STD/STDManage";
+import STDEdit from "./components/STD/STDEdit";
 
 function App() {
   const API_URL = import.meta.env.VITE_API_URL;
@@ -103,6 +104,7 @@ function App() {
             <Route index element={<STDHome />} />
             <Route path="create" element={<STDCreate />} />
             <Route path="management" element={<STDManage />} />
+            <Route path="edit" element={<STDEdit />} />
           </Route>
         </Routes>
       </Box>

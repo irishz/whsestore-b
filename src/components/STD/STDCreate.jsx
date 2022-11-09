@@ -81,7 +81,9 @@ function STDCreate() {
     if (e.keyCode === 9 || e.charCode === 13) {
       e.preventDefault();
       inputRef.current.select();
-
+      if (!e.target.value) {
+        return;
+      }
       let createItemObj = {
         box: selectedBox,
         layer: selectedLayer,
@@ -107,18 +109,14 @@ function STDCreate() {
 
   function handleProcess() {
     setisLoading(true);
-    let status = undefined;
+    let count = 0;
     // loop create data
     scanItemList.forEach((data) => {
-      axios.post(`${API_URL}/location-std`, data).then((res) => {
-        if (res.status === 200) {
-          status = res.data.msg;
-        }
-      });
+      axios.post(`${API_URL}/location-std`, data);
+      count++;
     });
-    console.log(status);
     //Check all data is created
-    if (status) {
+    if (count === scanItemList.length) {
       onClose();
       toast({
         title: "เพิ่มข้อมูลใหม่สำเร็จ",

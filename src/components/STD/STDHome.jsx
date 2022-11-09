@@ -1,3 +1,4 @@
+import { DeleteIcon } from "@chakra-ui/icons";
 import {
   Accordion,
   AccordionButton,
@@ -72,34 +73,12 @@ function STDHome() {
       setscanInput(e.target.value);
       inputRef.current.select();
 
-      toast({
-        title: "ไม่พบ Item นี้ในระบบ",
-        description: "กรุณาตรวจสอบข้อมูลและลองใหม่อีกครั้ง",
-        status: "error",
-        duration: 3000,
-      });
-    }
-  }
-
-  function handleScanInput(e) {
-    if (e.keyCode === 9 || e.charCode === 13) {
-      e.preventDefault();
-      setscanInput(e.target.value);
-      inputRef.current.select();
-
       // let jobLocationExist = locList.find((loc) => loc.item === e.target.value);
 
       // if (jobLocationExist) {
       //   playAudio(e.target.value);
       //   return;
       // }
-
-      toast({
-        title: "เกิดข้อผิดพลาด",
-        description: "ไม่พบ Job นี้ในระบบ",
-        status: "error",
-        duration: 3000,
-      });
     }
   }
 
@@ -140,7 +119,7 @@ function STDHome() {
           locList
             .filter(({item}) => item === scanInput)
             .map(({item, box, layer}) => (
-              <Flex h={"sm"} gap={3} key={item}>
+              <Flex w="3xl" h={"sm"} gap={3} key={item} justifyContent='center'>
                 <Flex
                   flex={1}
                   p={3}
@@ -169,47 +148,7 @@ function STDHome() {
                   <Heading fontSize={96}>{layer}</Heading>
                   <Text>ชั้น</Text>
                 </Flex>
-                <Box
-                  flex={1}
-                  rounded="lg"
-                  border
-                  borderWidth={1}
-                  borderColor="gray.400"
-                >
-                  <Flex
-                    flexDirection={"column"}
-                    justifyContent="space-between"
-                    h={"full"}
-                  >
-                    <Box p={2} borderBottomWidth={1} borderColor="gray.400">
-                      <Text textAlign={"center"} fontSize="lg">
-                        ประวัติการสแกน
-                      </Text>
-                    </Box>
-                    <Box
-                      py={3}
-                      px={5}
-                      overflowY="auto"
-                      maxHeight={280}
-                      h="full"
-                    >
-                      <OrderedList spacing={2}>
-                      </OrderedList>
-                    </Box>
-                    <Box>
-                      <Button
-                        variant={"solid"}
-                        colorScheme="red"
-                        m={1}
-                        w="97%"
-                        leftIcon={<DeleteIcon />}
-                        onClick={() => handleHistoryClear()}
-                      >
-                        ล้างประวัติการสแกน
-                      </Button>
-                    </Box>
-                  </Flex>
-                </Box>
+
               </Flex>
             ))
         ) : (
