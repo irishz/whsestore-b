@@ -9,7 +9,7 @@ const NavbarMenuList = {
     {
       name: "หน้าแรก",
       icon: <AiFillHome />,
-      url: "/",
+      url: "/store-s",
     },
     {
       name: "เพิ่ม Item",
@@ -33,7 +33,7 @@ const NavbarMenuList = {
     {
       name: "หน้าแรก",
       icon: <AiFillHome />,
-      url: "/",
+      url: "/store-b",
     },
     {
       name: "จำหน่าย Item",
@@ -60,15 +60,15 @@ const NavbarMenuList = {
     {
       name: "หน้าแรก",
       icon: <AiFillHome />,
-      url: "/",
+      url: "/std",
     },
     {
-      name: "เพิ่ม Item",
-      url: "",
+      name: "เพิ่ม Std",
+      url: `${base_url_std}/create`,
     },
     {
-      name: "ย้าย Location",
-      url: "",
+      name: "จัดการ location",
+      url: `${base_url_std}/management`,
     },
   ],
 };

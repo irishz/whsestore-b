@@ -26,6 +26,8 @@ import axios from "axios";
 import jwtDecode from "jwt-decode";
 import MatlTrans from "./components/StoreB/MatlTrans";
 import CheckOnhand from "./components/StoreS/CheckOnhand";
+import STDCreate from "./components/STD/STDCreate";
+import STDManage from "./components/STD/STDManage";
 
 function App() {
   const API_URL = import.meta.env.VITE_API_URL;
@@ -35,16 +37,16 @@ function App() {
   useEffect(() => {
     setuserToken(localStorage.getItem("token"));
     if (userToken) {
-    const userTokenDecoded = jwtDecode(userToken)
+      const userTokenDecoded = jwtDecode(userToken);
       axios
-      .get(`${API_URL}/users/${userTokenDecoded.id}`, {
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-        },
-      })
-      .then((res) => {
-        setuserData(res.data);
-      });
+        .get(`${API_URL}/users/${userTokenDecoded.id}`, {
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        })
+        .then((res) => {
+          setuserData(res.data);
+        });
     }
   }, []);
 
@@ -97,7 +99,11 @@ function App() {
             <Route index element={<User />} />
             <Route path="create" element={<UserCreate />} />
           </Route>
-          <Route path="/std" element={<STDHome />} />
+          <Route path="/std">
+            <Route index element={<STDHome />} />
+            <Route path="create" element={<STDCreate />} />
+            <Route path="management" element={<STDManage />} />
+          </Route>
         </Routes>
       </Box>
     </AuthContext.Provider>

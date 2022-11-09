@@ -22,6 +22,7 @@ import { Link } from "react-router-dom";
 import Navbar from "../Navbar/Navbar";
 
 function Layer() {
+  const API_URL = import.meta.env.VITE_API_URL;
   const [layerList, setlayerList] = useState([]);
   const toast = useToast();
   const [isDeleted, setisDeleted] = useState(false);

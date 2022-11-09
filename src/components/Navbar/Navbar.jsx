@@ -103,7 +103,6 @@ function Navbar() {
                     color: "#ECD59F",
                     borderBottomColor: "#ECD59F",
                     borderBottomWidth: 1,
-                    pb: 1,
                   }}
                 >
                   {data.icon}
@@ -121,7 +120,6 @@ function Navbar() {
                     color: "#ECD59F",
                     borderBottomColor: "#ECD59F",
                     borderBottomWidth: 1,
-                    pb: 1,
                   }}
                 >
                   {data.icon}

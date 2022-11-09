@@ -26,24 +26,25 @@ import {
   TabPanels,
   Tabs,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { RiRefreshLine } from "react-icons/ri";
 import Navbar from "../Navbar/Navbar";
+
 function STDHome() {
-  const navigate = useNavigate();
   const [scanInput, setscanInput] = useState("");
   const [locList, setlocList] = useState([]);
   const [boxList, setboxList] = useState([]);
   const [layerList, setlayerList] = useState([]);
   const inputRef = useRef();
-  const API_URL = import.meta.env.VITE_API_URL
-  console.log(API_URL)
-  
+  const API_URL = import.meta.env.VITE_API_URL;
+  const toast = useToast();
+
   useEffect(() => {
-    axios.get(`${API_URL}/location`).then((res) => {
+    axios.get(`${API_URL}/location-std`).then((res) => {
       setlocList(res.data);
     });
     axios.get(`${API_URL}/box`).then((res) => {
@@ -53,16 +54,10 @@ function STDHome() {
       setlayerList(res.data);
     });
 
-    //Check localstorage historyScan is exist?
-    const histList = localStorage.getItem("historyScan");
-    if (histList) {
-      sethistoryList(JSON.parse(histList));
-    }
-
     return () => {
       setlocList([]);
       setboxList([]);
-      setchList([]);
+      setlayerList([]);
     };
   }, []);
 
@@ -71,16 +66,45 @@ function STDHome() {
     inputRef.current.select();
   }
 
-  function handleHistoryClear() {
-    sethistoryList([]);
-    localStorage.removeItem("historyScan");
-    handleInputClear();
-    toast({
-      title: "ล้างประวัติการสแกนแล้ว",
-      status: "info",
-      isClosable: true,
-      duration: 2000,
-    });
+  function handleScanInput(e) {
+    if (e.keyCode === 9 || e.charCode === 13) {
+      e.preventDefault();
+      setscanInput(e.target.value);
+      inputRef.current.select();
+
+      toast({
+        title: "ไม่พบ Item นี้ในระบบ",
+        description: "กรุณาตรวจสอบข้อมูลและลองใหม่อีกครั้ง",
+        status: "error",
+        duration: 3000,
+      });
+    }
+  }
+
+  function handleScanInput(e) {
+    if (e.keyCode === 9 || e.charCode === 13) {
+      e.preventDefault();
+      setscanInput(e.target.value);
+      inputRef.current.select();
+
+      // let jobLocationExist = locList.find((loc) => loc.item === e.target.value);
+
+      // if (jobLocationExist) {
+      //   playAudio(e.target.value);
+      //   return;
+      // }
+
+      toast({
+        title: "เกิดข้อผิดพลาด",
+        description: "ไม่พบ Job นี้ในระบบ",
+        status: "error",
+        duration: 3000,
+      });
+    }
+  }
+
+  function renderLocationData(box, layer) {
+    return locList.filter((loc) => loc.box === box && loc.layer === layer);
   }
 
   return (
@@ -91,33 +115,32 @@ function STDHome() {
         <Box my={3}>
           <FormControl>
             <FormLabel fontSize={["sm", "md", "lg", "xl"]}>
-              ค้นหาโดยการสแกนหมายเลข Job
+              ค้นหาโดยการสแกน Item
             </FormLabel>
             <InputGroup>
               <Input
                 ref={inputRef}
                 type={"text"}
-                maxLength={10}
-                // onKeyDown={(e) => handleScanInput(e)}
-                // onKeyPress={(e) => handleScanInput(e)}
+                onKeyDown={(e) => handleScanInput(e)}
+                onKeyPress={(e) => handleScanInput(e)}
                 autoFocus
               />
-              {scanInput ? (
+              {scanInput && (
                 <InputRightAddon
                   children={<RiRefreshLine />}
                   as={Button}
-                  // onClick={() => handleInputClear()}
+                  onClick={() => handleInputClear()}
                 />
-              ) : null}
+              )}
             </InputGroup>
           </FormControl>
         </Box>
 
         {scanInput.length > 0 ? (
           locList
-            .filter((loc) => loc.job === scanInput)
-            .map((loc) => (
-              <Flex h={"sm"} gap={3} key={loc.job}>
+            .filter(({item}) => item === scanInput)
+            .map(({item, box, layer}) => (
+              <Flex h={"sm"} gap={3} key={item}>
                 <Flex
                   flex={1}
                   p={3}
@@ -129,8 +152,8 @@ function STDHome() {
                   justifyContent={"center"}
                   alignItems="center"
                 >
-                  <Heading fontSize={96}>{loc.box}</Heading>
-                  <Text>โซน</Text>
+                  <Heading fontSize={96}>{box}</Heading>
+                  <Text>กล่อง</Text>
                 </Flex>
                 <Flex
                   flex={1}
@@ -143,8 +166,8 @@ function STDHome() {
                   justifyContent={"center"}
                   alignItems="center"
                 >
-                  <Heading fontSize={96}>{loc.ch}</Heading>
-                  <Text>ช่อง</Text>
+                  <Heading fontSize={96}>{layer}</Heading>
+                  <Text>ชั้น</Text>
                 </Flex>
                 <Box
                   flex={1}
@@ -171,11 +194,6 @@ function STDHome() {
                       h="full"
                     >
                       <OrderedList spacing={2}>
-                        {historyList
-                          ? historyList.map((data) => (
-                              <ListItem key={data}>{data}</ListItem>
-                            ))
-                          : null}
                       </OrderedList>
                     </Box>
                     <Box>
@@ -200,19 +218,19 @@ function STDHome() {
               <TabList>
                 {boxList
                   .sort((a, b) => a.box - b.box)
-                  .map((box) =>
-                    box.box === 99 ? (
-                      <Tab key={box.box}>อื่นๆ</Tab>
+                  .map(({box}) =>
+                    box === 99 ? (
+                      <Tab key={box}>อื่นๆ</Tab>
                     ) : (
-                      <Tab key={box.box}>box {box.box}</Tab>
+                      <Tab key={box}>กล่อง {box}</Tab>
                     )
                   )}
               </TabList>
               <TabPanels>
                 {boxList
                   .sort((a, b) => a.box - b.box)
-                  .map((box) => (
-                    <TabPanel key={box.box}>
+                  .map(({box}) => (
+                    <TabPanel key={box}>
                       <Accordion>
                         <Grid
                           templateColumns={{
@@ -222,8 +240,8 @@ function STDHome() {
                           }}
                           gap={5}
                         >
-                          {chList.map((ch) => (
-                            <AccordionItem key={ch.ch}>
+                          {layerList.map(({layer}) => (
+                            <AccordionItem key={layer}>
                               <h2>
                                 <AccordionButton
                                   _expanded={{
@@ -236,14 +254,14 @@ function STDHome() {
                                     textAlign="left"
                                     alignItems={"center"}
                                   >
-                                    ช่อง: {ch.ch}{" "}
+                                    ชั้น: {layer}{" "}
                                     <Badge
                                       variant={"subtle"}
                                       ml={3}
                                       colorScheme="blue"
                                     >
                                       {
-                                        renderLocationData(box.box, ch.ch)
+                                        renderLocationData(box, layer)
                                           .length
                                       }
                                     </Badge>
@@ -253,12 +271,10 @@ function STDHome() {
                               </h2>
                               <GridItem>
                                 <AccordionPanel bgColor={"gray.100"}>
-                                  {renderLocationData(box.box, ch.ch).map(
-                                    (loc) => (
-                                      <Flex mt={1} key={loc.job}>
-                                        <Text>{loc.job}</Text>
-                                        <Spacer />
-                                        <Text>{loc.item}</Text>
+                                  {renderLocationData(box, layer).map(
+                                    ({item}) => (
+                                      <Flex mt={1} key={item}>
+                                        <Text>{item}</Text>
                                       </Flex>
                                     )
                                   )}

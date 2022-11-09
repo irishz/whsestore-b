@@ -1,9 +1,4 @@
-import {
-  CheckIcon,
-  CloseIcon,
-  DeleteIcon,
-  PlusSquareIcon,
-} from "@chakra-ui/icons";
+import { AddIcon, CheckIcon, CloseIcon, DeleteIcon } from "@chakra-ui/icons";
 import {
   Alert,
   AlertDescription,
@@ -47,122 +42,114 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
-import Navbar from "../Navbar/Navbar";
 import { BiPlus } from "react-icons/bi";
-import { useNavigate } from "react-router-dom";
+import Navbar from "../Navbar/Navbar";
 
-function CreateLocation() {
+function STDCreate() {
   const API_URL = import.meta.env.VITE_API_URL;
-  const [zoneList, setzoneList] = useState([]);
+  const [boxList, setboxList] = useState([]);
+  const [layerList, setlayerList] = useState([]);
   const [locList, setlocList] = useState([]);
-  const [channelList, setchannelList] = useState([]);
-  const [scanjobList, setscanjobList] = useState([]);
-  const [selectedZone, setselectedZone] = useState(0);
-  const [selectedChannel, setselectedChannel] = useState(0);
+  const [itemInput, setitemInput] = useState("");
+  const [scanItemList, setscanItemList] = useState([]);
+  const [selectedBox, setselectedBox] = useState(0);
+  const [selectedLayer, setselectedLayer] = useState(0);
   const [isLoading, setisLoading] = useState(false);
   let inputRef = useRef();
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
-    axios.get(`${API_URL}/location`).then((res) => {
+    axios.get(`${API_URL}/location-std`).then((res) => {
       setlocList(res.data);
     });
-    axios.get(`${API_URL}/zone`).then((res) => {
-      setzoneList(res.data);
+    axios.get(`${API_URL}/box`).then((res) => {
+      setboxList(res.data);
     });
-
-    axios.get(`${API_URL}/channel`).then((res) => {
-      setchannelList(res.data);
+    axios.get(`${API_URL}/layer`).then((res) => {
+      setlayerList(res.data);
     });
   }, []);
 
-  function handleScanJob(e) {
+  useEffect(() => {
+    axios.get(`${API_URL}/location-std`).then((res) => {
+      setlocList(res.data);
+    });
+  }, [isLoading]);
+
+  function handleScanItem(e) {
     if (e.keyCode === 9 || e.charCode === 13) {
       e.preventDefault();
       inputRef.current.select();
-      let str = e.target.value;
-      str = str.split("+");
-      if (str.length !== 2) {
-        toast({
-          title: "เกิดข้อผิดพลาด",
-          description: "รูปแบบข้อมูลไม่ถูกต้อง กรุณาตรวจสอบ QR Code",
-          status: "error",
-          duration: 3000,
-          isClosable: true,
-        });
-        return;
-      }
+
       let createItemObj = {
-        zone: selectedZone,
-        ch: parseInt(selectedChannel),
-        job: str[0],
-        item: str[1],
+        box: selectedBox,
+        layer: selectedLayer,
+        item: e.target.value,
       };
-      const jobExist = scanjobList?.find((list) => list.job === str[0]);
-      const jobLocExist = locList?.find((list) => list.job === str[0]);
-      if (jobLocExist) {
+      const itemExist = scanItemList?.find(({ item }) => item === itemInput);
+      const itemLocExist = locList?.find(({ item }) => item === itemInput);
+      if (itemLocExist) {
         toast({
-          title: "job นี้มีในระบบอยู่แล้ว",
+          title: "item นี้มีในระบบอยู่แล้ว",
           status: "error",
           duration: 3000,
         });
       }
-      if (!jobExist && !jobLocExist) {
-        const tempList = scanjobList.concat(createItemObj);
-        setscanjobList(tempList);
-        console.log(scanjobList);
+      if (!itemExist && !itemLocExist) {
+        const tempList = scanItemList.concat(createItemObj);
+        setscanItemList(tempList);
         return;
       }
-      console.log("job exist");
+      console.log("item exist");
     }
   }
 
   function handleProcess() {
-    console.log(scanjobList);
-    let count = 0;
     setisLoading(true);
-    scanjobList.forEach((data) => {
-      axios
-        .post(`${API_URL}/location`, data)
-        .then((res) => {
-          if ((res.status = 200)) {
-            onClose();
-            toast({
-              title: "เพิ่มข้อมูลใหม่สำเร็จ",
-              status: "success",
-              duration: 3000,
-            });
-            setisLoading(false);
-            setscanjobList([]);
-            setselectedZone(0);
-            setselectedChannel(0);
-            inputRef.current.value = "";
-            return;
-          }
-        })
-        .catch((err) => {
-          if (err) {
-            onClose();
-            toast({
-              title: "เกิดข้อผิดพลาด",
-              description:
-                "ไม่สามารถเพิ่มข้อมูล กรุณาตรวจสอบข้อมูลและลองทำใหม่อีกครั้ง",
-              status: "error",
-              duration: 3000,
-            });
-            setisLoading(false);
-            setscanjobList([]);
-            return;
-          }
-        });
+    let status = undefined;
+    // loop create data
+    scanItemList.forEach((data) => {
+      axios.post(`${API_URL}/location-std`, data).then((res) => {
+        if (res.status === 200) {
+          status = res.data.msg;
+        }
+      });
     });
+    console.log(status);
+    //Check all data is created
+    if (status) {
+      onClose();
+      toast({
+        title: "เพิ่มข้อมูลใหม่สำเร็จ",
+        status: "success",
+        duration: 3000,
+      });
+      setisLoading(false);
+      setscanItemList([]);
+      setselectedBox(0);
+      setselectedLayer(0);
+      inputRef.current.value = "";
+      inputRef.current.focus();
+      return;
+    }
+    // Alert toast when data create not equal to create list
+    onClose();
+    toast({
+      title: "เกิดข้อผิดพลาด",
+      description:
+        "ไม่สามารถเพิ่มข้อมูล กรุณาตรวจสอบข้อมูลและลองทำใหม่อีกครั้ง",
+      status: "error",
+      duration: 3000,
+    });
+    setisLoading(false);
+    setscanItemList([]);
   }
 
-  function handleScanJobListDelete(i) {
-    let tempList = [...scanjobList];
+  function handleScanItemListDelete(i) {
+    let tempList = [...scanItemList];
     tempList.splice(i, 1);
-    setscanjobList(tempList);
+    setscanItemList(tempList);
   }
 
   return (
@@ -170,51 +157,56 @@ function CreateLocation() {
       <Navbar />
 
       <Container
-        maxWidth={{
-          base: "container.xl",
-          lg: "container.lg",
-          md: "container.md",
+        maxW={{
+          base: "container.sm",
           sm: "container.sm",
+          md: "container.md",
+          lg: "container.lg",
         }}
       >
-        <Heading color={"gray.600"} mt={5} mb={3}>
-          <PlusSquareIcon />
-          เพิ่ม Item
+        <Heading
+          fontSize={"3xl"}
+          color={"gray.600"}
+          alignContent="center"
+          mt={5}
+          mb={3}
+        >
+          <AddIcon fontSize={"0.8em"} /> เพิ่ม item standard เข้า location
         </Heading>
 
         <Divider border borderColor={"gray.600"} />
 
         <Stack spacing={5} mt={3}>
           <Flex gap={5} alignItems="center">
-            <Text>โซน: </Text>
+            <Text>กล่อง: </Text>
             <ButtonGroup spacing={6} variant="solid">
-              {zoneList
-                .sort((a, b) => a.zone - b.zone)
-                .map((zone) => (
+              {boxList
+                .sort((a, b) => a.box - b.box)
+                .map(({ box }) => (
                   <Button
-                    key={zone.zone}
-                    bgColor={selectedZone === zone.zone ? "#C6A477" : "#ECD59F"}
-                    onClick={() => setselectedZone(zone.zone)}
+                    key={box}
+                    bgColor={selectedBox === box ? "#C6A477" : "#ECD59F"}
+                    onClick={() => setselectedBox(box)}
                   >
-                    {zone.zone === 99 ? "อื่นๆ" : zone.zone}
+                    {box === 99 ? "อื่นๆ" : box}
                   </Button>
                 ))}
             </ButtonGroup>
           </Flex>
 
           <Flex gap={5} alignItems={"center"} w="sm">
-            <Text>ช่อง: </Text>
+            <Text>ชั้น: </Text>
             <FormControl>
               <Select
-                placeholder="เลือกช่อง"
+                placeholder="เลือกชั้น"
                 bgColor={"#ECD59F"}
-                onChange={(e) => setselectedChannel(e.target.value)}
+                onChange={(e) => setselectedLayer(e.target.value)}
               >
-                {channelList
-                  .sort((a, b) => a.ch - b.ch)
-                  .map((ch) => (
-                    <option value={ch.ch} key={ch.ch}>
-                      {ch.ch}
+                {layerList
+                  .sort((a, b) => a.layer - b.layer)
+                  .map(({ layer }) => (
+                    <option value={layer} key={layer}>
+                      {layer}
                     </option>
                   ))}
               </Select>
@@ -223,16 +215,17 @@ function CreateLocation() {
 
           <Divider borderWidth={1} borderColor="gray.600" />
 
-          {selectedZone && selectedChannel > 0 ? (
+          {selectedBox && selectedLayer > 0 ? (
             <Box>
               <FormControl>
-                <FormLabel>Scan Job</FormLabel>
+                <FormLabel>Scan Item</FormLabel>
                 <Input
+                  ref={inputRef}
                   type={"text"}
                   bgColor="#D3E7EE"
-                  ref={inputRef}
-                  onKeyDown={(e) => handleScanJob(e)}
-                  onKeyPress={(e) => handleScanJob(e)}
+                  onKeyDown={(e) => handleScanItem(e)}
+                  onKeyPress={(e) => handleScanItem(e)}
+                  onChange={(e) => setitemInput(e.target.value)}
                   autoFocus
                 />
               </FormControl>
@@ -240,26 +233,24 @@ function CreateLocation() {
               <TableContainer overflowY={"auto"}>
                 <Table variant={"striped"} size="md">
                   <TableCaption>
-                    Job ทั้งหมด :{" "}
-                    <Badge colorScheme={"purple"}>{scanjobList.length}</Badge>
+                    item ทั้งหมด :{" "}
+                    <Badge colorScheme={"purple"}>{scanItemList.length}</Badge>
                   </TableCaption>
                   <Thead>
                     <Tr>
                       <Th w="7%">ลำดับ</Th>
-                      <Th>โซน</Th>
-                      <Th>ช่อง</Th>
-                      <Th>Job</Th>
+                      <Th>กล่อง</Th>
+                      <Th>ชั้น</Th>
                       <Th>Item</Th>
                       <Th></Th>
                     </Tr>
                   </Thead>
                   <Tbody>
-                    {scanjobList.map(({ item, job, zone, ch }, idx) => (
-                      <Tr key={job}>
+                    {scanItemList.map(({ item, box, layer }, idx) => (
+                      <Tr key={item}>
                         <Td>{idx + 1}</Td>
-                        <Td>{zone}</Td>
-                        <Td>{ch}</Td>
-                        <Td>{job}</Td>
+                        <Td>{box}</Td>
+                        <Td>{layer}</Td>
                         <Td>{item}</Td>
                         <Td>
                           <DeleteIcon
@@ -267,7 +258,7 @@ function CreateLocation() {
                             h={4}
                             color="red.500"
                             _hover={{ color: "red.300" }}
-                            onClick={() => handleScanJobListDelete(idx, job)}
+                            onClick={() => handleScanItemListDelete(idx)}
                           />
                         </Td>
                       </Tr>
@@ -283,7 +274,7 @@ function CreateLocation() {
                 bgColor={"#7097A8"}
                 _hover={{ bgColor: "#5B7C89" }}
                 onClick={onOpen}
-                disabled={scanjobList.length > 0 ? false : true}
+                disabled={scanItemList.length > 0 ? false : true}
               >
                 เพิ่ม Item ทั้งหมด
               </Button>
@@ -292,7 +283,7 @@ function CreateLocation() {
             <Alert status="info" variant={"left-accent"}>
               <AlertIcon />
               <AlertTitle>
-                กรุณาเลือกโซนและช่องให้ครบถ้วนก่อนสแกน job
+                กรุณาเลือกกล่องและชั้นให้ครบถ้วนก่อนสแกน item
               </AlertTitle>
             </Alert>
           )}
@@ -333,4 +324,4 @@ function CreateLocation() {
   );
 }
 
-export default CreateLocation;
+export default STDCreate;

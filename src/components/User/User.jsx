@@ -22,8 +22,10 @@ import moment from "moment";
 import { useNavigate } from "react-router-dom";
 
 function User() {
+  const API_URL = import.meta.env.VITE_API_URL;
   const [userList, setuserList] = useState([]);
-const navigate = useNavigate()
+  const navigate = useNavigate();
+  
   useEffect(() => {
     axios.get(`${API_URL}/users`).then((res) => {
       setuserList(res.data);
@@ -55,7 +57,7 @@ const navigate = useNavigate()
             leftIcon={<PlusSquareIcon />}
             variant="outline"
             colorScheme={"green"}
-            onClick={() => navigate('/user/create')}
+            onClick={() => navigate("/user/create")}
           >
             เพิ่มผู้ใช้
           </Button>
