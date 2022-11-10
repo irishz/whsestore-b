@@ -18,7 +18,7 @@ import WhseImage from "../../assets/whse-img.jpg";
 import { useNavigate } from "react-router-dom";
 
 function Login(props) {
-  const API_URL = import.meta.env.VITE_API_URL
+  const API_URL = import.meta.env.VITE_API_URL;
   const [isLoadingLogin, setisLoadingLogin] = useState(false);
   const {
     register,
@@ -63,14 +63,14 @@ function Login(props) {
         w="100wh"
         h="100vh"
         bgImage={WhseImage}
+        bgSize={{ base: "cover", md: "contain", lg: "contain" }}
         bgPosition="center"
-        bgSize={"contain"}
         justifyContent="center"
         alignItems="center"
       >
         <Stack
           gap={2}
-          w={["sm", "md"]}
+          w={{ base: 300, sm: "sm", md: "md", lg: "lg" }}
           border
           borderWidth={1}
           borderRadius={7}

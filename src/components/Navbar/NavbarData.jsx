@@ -15,10 +15,10 @@ const NavbarMenuList = {
       name: "เพิ่ม Item",
       url: `${base_url_store_s}/create-loc`,
     },
-    {
-      name: "ย้าย Location",
-      url: `${base_url_store_s}/move-loc`,
-    },
+    // {
+    //   name: "ย้าย Location",
+    //   url: `${base_url_store_s}/move-loc`,
+    // },
     {
       name: "Divider",
       divider: true,

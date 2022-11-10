@@ -29,6 +29,7 @@ import CheckOnhand from "./components/StoreS/CheckOnhand";
 import STDCreate from "./components/STD/STDCreate";
 import STDManage from "./components/STD/STDManage";
 import STDEdit from "./components/STD/STDEdit";
+import UserEdit from "./components/User/UserEdit";
 
 function App() {
   const API_URL = import.meta.env.VITE_API_URL;
@@ -99,6 +100,7 @@ function App() {
           <Route path="/user">
             <Route index element={<User />} />
             <Route path="create" element={<UserCreate />} />
+            <Route path="edit" element={<UserEdit />} />
           </Route>
           <Route path="/std">
             <Route index element={<STDHome />} />

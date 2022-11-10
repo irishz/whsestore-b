@@ -22,6 +22,7 @@ import { Link } from "react-router-dom";
 import Navbar from "../Navbar/Navbar";
 
 function Zone() {
+  const API_URL = import.meta.env.VITE_API_URL
   const [zoneList, setzoneList] = useState([]);
   const toast = useToast();
   const [isDeleted, setisDeleted] = useState(false);

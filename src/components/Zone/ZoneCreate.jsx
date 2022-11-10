@@ -18,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "../Navbar/Navbar";
 
 function ZoneCreate() {
+  const API_URL = import.meta.env.VITE_API_URL
   const navigate = useNavigate();
   const {
     register,
