@@ -114,7 +114,7 @@ function CheckOnhand() {
 
   function playZone(zone) {
     console.log("play zone", zone);
-    const audioSrc = `/src/assets/sounds/${zone}.mp3`;
+    const audioSrc = new URL(`/src/assets/sounds/${zone}.mp3`, import.meta.url)
 
     let audioZone = new Audio(zoneAudio),
       numberZone = new Audio(audioSrc);
