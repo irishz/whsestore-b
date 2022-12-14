@@ -29,6 +29,8 @@ import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
 import AuthContext from "../../Context/AuthContext";
 
 function CheckMatlIssue() {
+  const API_URL = import.meta.env.VITE_API_URL;
+
   const [jobMatlList, setjobMatlList] = useState([]);
   const [scanList, setscanList] = useState([]);
   const [isLoaded, setisLoaded] = useState(false);
