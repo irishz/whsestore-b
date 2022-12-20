@@ -10,23 +10,17 @@ import {
   InputRightElement,
   Skeleton,
   Stack,
-  Text,
   useToast,
   VStack,
 } from "@chakra-ui/react";
 import axios from "axios";
-import React, {
-  createRef,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import Navbar from "../Navbar/Navbar";
 import { MdRefresh, MdSave } from "react-icons/md";
 import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
 import AuthContext from "../../Context/AuthContext";
+import pass from "../../assets/sounds/ผ่าน.mp3";
+import notPass from "../../assets/sounds/ไม่ผ่าน.mp3";
 
 function CheckMatlIssue() {
   const API_URL = import.meta.env.VITE_API_URL;
@@ -78,6 +72,8 @@ function CheckMatlIssue() {
   }
 
   function handleItemScan(e, idx) {
+    let audioPass = new Audio(pass);
+    let audioNotPass = new Audio(notPass);
     if (e.keyCode === 9 || e.charCode === 13) {
       const refList = Object.values(inputRefList.current).map(
         (val) => val.value
@@ -106,9 +102,13 @@ function CheckMatlIssue() {
           ...current,
           { item: itemTemp, status: false },
         ]);
+        // insert audio sound not pass!
+        audioNotPass.play();
         return;
       }
+      // insert audio sound pass!
       setscanList((current) => [...current, { item: itemTemp, status: true }]);
+      audioPass.play();
     }
   }
 
@@ -123,11 +123,10 @@ function CheckMatlIssue() {
     axios
       .post(`${API_URL}/jobtrans/`, jobTransObj)
       .then((res) => {
-        handleResetBtnClick()
+        handleResetBtnClick();
         toast({
           title: res.data.msg,
           status: "success",
-          position: "bottom-right",
           duration: 3000,
         });
       })
