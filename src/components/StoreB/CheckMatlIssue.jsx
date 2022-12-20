@@ -48,23 +48,26 @@ function CheckMatlIssue() {
         return;
       }
 
-      const jobTemp = e.target.value;
-      setjob(jobTemp);
+      setjob(e.target.value);
 
-      axios.get(`http://192.168.2.13/api/getjobmatl/${jobTemp}`).then((res) => {
-        if (res.data.length) {
-          setjobMatlList(res.data);
-          return;
-        }
-        e.preventDefault();
-        jobInputRef.current.select();
-        toast({
-          title: "ไม่พบข้อมูล",
-          description: "กรุณาตรวจสอบหมายเลข job",
-          status: "error",
-          isClosable: true,
+      axios
+        .get(`http://192.168.2.13/api/getjobmatl/${e.target.value}`)
+        .then((res) => {
+          if (res.data.length) {
+            let tempList = res.data;
+            tempList.forEach((job) => (job.item = job.item.replace("-E", "")));
+            setjobMatlList(tempList);
+            return;
+          }
+          e.preventDefault();
+          jobInputRef.current.select();
+          toast({
+            title: "ไม่พบข้อมูล",
+            description: "กรุณาตรวจสอบหมายเลข job",
+            status: "error",
+            isClosable: true,
+          });
         });
-      });
       setTimeout(() => {
         setisLoaded(true);
       }, 1000);
@@ -78,7 +81,11 @@ function CheckMatlIssue() {
       const refList = Object.values(inputRefList.current).map(
         (val) => val.value
       );
-      const itemTemp = e.target.value;
+      let itemTemp = e.target.value;
+
+      //remove -E
+      itemTemp = itemTemp.toUpperCase();
+      itemTemp = itemTemp.replace("-E", "");
 
       const itemExist = refList.filter((item) => item === itemTemp).length;
       if (
@@ -95,7 +102,7 @@ function CheckMatlIssue() {
         });
         return;
       }
-
+      // console.log(jobMatlList[0].item, itemTemp);
       if (!jobMatlList.find((job) => job.item === itemTemp)) {
         // Insert to List to display status
         setscanList((current) => [
@@ -154,9 +161,11 @@ function CheckMatlIssue() {
   }
 
   function renderColorByStatus(input_item, type) {
-    const tempJob = jobMatlList.find(({ item }) => item === input_item);
+    let itemInput = input_item;
+    itemInput = itemInput?.replace("-E", "");
+    const tempJob = jobMatlList.find(({ item }) => item === itemInput);
 
-    if (!scanList.find(({ item }) => item === input_item)) {
+    if (!scanList.find(({ item }) => item === itemInput)) {
       if (type === "color") {
         return "gray.600";
       }
@@ -206,7 +215,7 @@ function CheckMatlIssue() {
                 <FormControl>
                   <InputGroup
                     color={renderColorByStatus(
-                      inputRefList.current[idx]?.value,
+                      inputRefList.current[idx]?.value.replace("-E", ""),
                       "color"
                     )}
                   >
