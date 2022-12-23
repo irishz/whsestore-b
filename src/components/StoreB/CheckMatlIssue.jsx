@@ -8,15 +8,20 @@ import {
   Input,
   InputGroup,
   InputRightElement,
+  List,
+  ListIcon,
+  ListItem,
+  OrderedList,
   Skeleton,
   Stack,
+  Text,
   useToast,
   VStack,
 } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import Navbar from "../Navbar/Navbar";
-import { MdRefresh, MdSave } from "react-icons/md";
+import { MdCheckCircle, MdRefresh, MdSave } from "react-icons/md";
 import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
 import AuthContext from "../../Context/AuthContext";
 import pass from "../../assets/sounds/ผ่าน.mp3";
@@ -29,6 +34,7 @@ function CheckMatlIssue() {
   const [scanList, setscanList] = useState([]);
   const [isLoaded, setisLoaded] = useState(false);
   const [isBtnSaveLoading, setisBtnSaveLoading] = useState(false);
+  const [scanResult, setscanResult] = useState(null);
   const [job, setjob] = useState("");
   const inputRefList = useRef({});
   const jobInputRef = useRef(null);
@@ -36,7 +42,7 @@ function CheckMatlIssue() {
   const authCtx = useContext(AuthContext);
   useEffect(() => {
     if (isLoaded) {
-      inputRefList.current[0]?.focus();
+      inputRefList.current?.focus();
     }
   }, [isLoaded]);
   useMemo(() => renderColorByStatus, [inputRefList]);
@@ -74,7 +80,7 @@ function CheckMatlIssue() {
     }
   }
 
-  function handleItemScan(e, idx) {
+  function handleItemScan(e) {
     let audioPass = new Audio(pass);
     let audioNotPass = new Audio(notPass);
     if (e.keyCode === 9 || e.charCode === 13) {
@@ -88,12 +94,12 @@ function CheckMatlIssue() {
       itemTemp = itemTemp.replace("-E", "");
 
       const itemExist = refList.filter((item) => item === itemTemp).length;
+      e.preventDefault();
+      inputRefList.current.select();
       if (
         itemExist > 1 ||
         scanList.map(({ item }) => item).includes(itemTemp)
       ) {
-        e.preventDefault();
-        inputRefList.current[idx].select();
         toast({
           title: `คุณได้สแกน item: ${itemTemp} ไปแล้ว`,
           status: "error",
@@ -104,18 +110,24 @@ function CheckMatlIssue() {
       }
       // console.log(jobMatlList[0].item, itemTemp);
       if (!jobMatlList.find((job) => job.item === itemTemp)) {
+        audioNotPass.play();
         // Insert to List to display status
         setscanList((current) => [
           ...current,
           { item: itemTemp, status: false },
         ]);
-        // insert audio sound not pass!
-        audioNotPass.play();
+        setscanResult("NG");
+        setTimeout(() => {
+          setscanResult(null);
+        }, 2000);
         return;
       }
-      // insert audio sound pass!
-      setscanList((current) => [...current, { item: itemTemp, status: true }]);
       audioPass.play();
+      setscanList((current) => [...current, { item: itemTemp, status: true }]);
+      setscanResult("OK");
+      setTimeout(() => {
+        setscanResult(null);
+      }, 2000);
     }
   }
 
@@ -158,6 +170,7 @@ function CheckMatlIssue() {
     setscanList([]);
     setjob("");
     setisBtnSaveLoading(false);
+    setscanResult(null);
   }
 
   function renderColorByStatus(input_item, type) {
@@ -209,36 +222,84 @@ function CheckMatlIssue() {
           </FormControl>
 
           <Divider borderColor={"gray.600"} />
-          <VStack spacing={3} w="full">
-            {jobMatlList.map(({ item }, idx) => (
-              <Skeleton isLoaded={isLoaded} w={"full"} key={item}>
-                <FormControl>
-                  <InputGroup
-                    color={renderColorByStatus(
-                      inputRefList.current[idx]?.value.replace("-E", ""),
-                      "color"
-                    )}
-                  >
-                    <Input
-                      ref={(e) => {
-                        inputRefList.current[idx] = e;
-                      }}
-                      type={"text"}
-                      onKeyDown={(e) => handleItemScan(e, idx)}
-                      onKeyPress={(e) => handleItemScan(e, idx)}
-                      onFocus={() => inputRefList.current[idx].select()}
-                    />
-                    <InputRightElement
-                      children={renderColorByStatus(
-                        inputRefList.current[idx]?.value,
-                        "icon"
-                      )}
-                    />
-                  </InputGroup>
-                </FormControl>
-              </Skeleton>
-            ))}
-          </VStack>
+
+          {job ? (
+            <Skeleton isLoaded={isLoaded} w={"full"}>
+              <FormControl>
+                <InputGroup>
+                  <Input
+                    ref={inputRefList}
+                    color={
+                      scanResult
+                        ? scanResult === "OK"
+                          ? "green"
+                          : "red"
+                        : "gray.700"
+                    }
+                    borderColor={
+                      scanResult
+                        ? scanResult === "OK"
+                          ? "green"
+                          : "red"
+                        : "gray.200"
+                    }
+                    bgColor={
+                      scanResult
+                        ? scanResult === "OK"
+                          ? "green.100"
+                          : "red.100"
+                        : "white"
+                    }
+                    autoFocus
+                    type={"text"}
+                    onKeyDown={(e) => handleItemScan(e)}
+                    onKeyPress={(e) => handleItemScan(e)}
+                    transitionDuration={"1000ms"}
+                  />
+                  <InputRightElement
+                    children={
+                      scanResult ? (
+                        scanResult === "OK" ? (
+                          <CheckIcon color={"green"} />
+                        ) : (
+                          <CloseIcon color={"red"} />
+                        )
+                      ) : null
+                    }
+                  />
+                </InputGroup>
+              </FormControl>
+            </Skeleton>
+          ) : null}
+          {scanList.length > 0 ? (
+            <Stack spacing={3} w="full">
+              <List spacing={2} fontSize='sm'>
+                {scanList.map(({ item, status }, idx) => {
+                  return (
+                    <ListItem
+                      key={item}
+                      display="flex"
+                      justifyContent={"space-between"}
+                      alignItems='center'
+                      px={5}
+                    >
+                      <Text>{idx + 1}. {item}</Text>
+                      <Text
+                        color={status ? "green.600" : "red.600"}
+                        bgColor={status ? "green.100" : "red.100"}
+                        rounded="md"
+                        py={1}
+                        px={4}
+                        fontWeight='semibold'
+                      >
+                        {status ? "OK" : "NG"}
+                      </Text>
+                    </ListItem>
+                  );
+                })}
+              </List>
+            </Stack>
+          ) : null}
           <Box
             w="full"
             display={"flex"}
@@ -246,7 +307,7 @@ function CheckMatlIssue() {
             gap={3}
           >
             <Button
-              w="50%"
+              w={{ base: "100%", sm: "100%", md: "50%", lg: "50%", xl: "50%" }}
               leftIcon={<MdSave />}
               variant="solid"
               colorScheme={"teal"}
@@ -258,7 +319,7 @@ function CheckMatlIssue() {
               บันทึก
             </Button>
             <Button
-              w="50%"
+              w={{ base: "100%", sm: "100%", md: "50%", lg: "50%", xl: "50%" }}
               variant={"outline"}
               colorScheme="twitter"
               leftIcon={<MdRefresh size="1.2em" />}
