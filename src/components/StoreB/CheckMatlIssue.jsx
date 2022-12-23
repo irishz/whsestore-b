@@ -9,19 +9,16 @@ import {
   InputGroup,
   InputRightElement,
   List,
-  ListIcon,
   ListItem,
-  OrderedList,
   Skeleton,
   Stack,
   Text,
   useToast,
-  VStack,
 } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import Navbar from "../Navbar/Navbar";
-import { MdCheckCircle, MdRefresh, MdSave } from "react-icons/md";
+import { MdRefresh, MdSave } from "react-icons/md";
 import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
 import AuthContext from "../../Context/AuthContext";
 import pass from "../../assets/sounds/ผ่าน.mp3";
@@ -93,21 +90,8 @@ function CheckMatlIssue() {
       itemTemp = itemTemp.toUpperCase();
       itemTemp = itemTemp.replace("-E", "");
 
-      const itemExist = refList.filter((item) => item === itemTemp).length;
       e.preventDefault();
       inputRefList.current.select();
-      if (
-        itemExist > 1 ||
-        scanList.map(({ item }) => item).includes(itemTemp)
-      ) {
-        toast({
-          title: `คุณได้สแกน item: ${itemTemp} ไปแล้ว`,
-          status: "error",
-          duration: 3000,
-          isClosable: true,
-        });
-        return;
-      }
       // console.log(jobMatlList[0].item, itemTemp);
       if (!jobMatlList.find((job) => job.item === itemTemp)) {
         audioNotPass.play();
