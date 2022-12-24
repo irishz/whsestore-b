@@ -36,12 +36,17 @@ const getAllJobTrans = async (req, res) => {
 
 const getQueryJobTrans = async (req, res) => {
   console.log(req.query);
-  const { job, start_date, end_date } = req.query;
+  const { start_date, end_date } = req.query;
+
+  const query = {
+    createdAt: {
+      $gte: start_date,
+      $lte: end_date,
+    },
+  };
+
   const jobTransRes = await jobTrans
-    .find({
-      job,
-      createdAt: { $gt: new Date(start_date), $lt: new Date(end_date) },
-    })
+    .find(query)
     .sort([
       ["createdAt", 1],
       ["job", 1],
