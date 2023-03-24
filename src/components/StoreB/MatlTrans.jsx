@@ -30,7 +30,7 @@ import moment from "moment";
 import "moment/dist/locale/th";
 import axios from "axios";
 
-function MatlTrans({children}) {
+function MatlTrans() {
   const API_URL = import.meta.env.VITE_API_URL;
 
   const [jobInput, setjobInput] = useState("");
@@ -39,6 +39,7 @@ function MatlTrans({children}) {
   const [startDate, setstartDate] = useState(new Date());
   const [endDate, setendDate] = useState(new Date());
   const [dateRangeToggle, setdateRangeToggle] = useBoolean(false);
+  const [isBtnLoading, setisBtnLoading] = useState(false);
 
   const jobRef = useRef();
 
@@ -63,17 +64,20 @@ function MatlTrans({children}) {
   };
 
   function handleSearchClick() {
-    let start_date = moment(startDate).format("YYYY-MM-DD");
-    let end_date = moment(endDate).format("YYYY-MM-DD");
+    setisBtnLoading(true)
     axios
       .get(
-        `${API_URL}/jobtrans/history?start_date=${start_date}&end_date=${end_date}`
+        `${API_URL}/jobtrans/history?start_date=${startDate}&end_date=${endDate}&job=${jobInput}`
       )
       .then((res) => {
         console.log(res.data);
         setjobList(res.data);
+        setisBtnLoading(false)
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err)
+        setisBtnLoading(false)
+      });
   }
 
   function handleJobReset() {
@@ -136,6 +140,7 @@ function MatlTrans({children}) {
           colorScheme="facebook"
           onClick={handleSearchClick}
           isDisabled={dateRangeBtnText === "เลือกวันที่" ? true : false}
+          isLoading={isBtnLoading}
         >
           ค้นหา
         </Button>

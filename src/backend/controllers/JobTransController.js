@@ -35,15 +35,21 @@ const getAllJobTrans = async (req, res) => {
 };
 
 const getQueryJobTrans = async (req, res) => {
-  console.log(req.query);
-  const { start_date, end_date } = req.query;
+  // console.log(req.query);
+  const { job, start_date, end_date } = req.query;
+  let query = null;
 
-  const query = {
+  query = {
+    job,
     createdAt: {
-      $gte: start_date,
-      $lte: end_date,
+      $gt: start_date,
+      $lt: end_date,
     },
   };
+
+  if (!job) {
+    delete query.job;
+  }
 
   const jobTransRes = await jobTrans
     .find(query)

@@ -48,6 +48,10 @@ const NavbarMenuList = {
       url: `${base_url_store_b}/cal-matl`,
     },
     {
+      name: "Location Compare",
+      url: `${base_url_store_b}/loc-compare`,
+    },
+    {
       name: "ตรวจสอบการจ่าย Matl",
       url: `${base_url_store_b}/check-matlissue`,
     },

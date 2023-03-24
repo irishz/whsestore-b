@@ -30,6 +30,7 @@ import STDCreate from "./components/STD/STDCreate";
 import STDManage from "./components/STD/STDManage";
 import STDEdit from "./components/STD/STDEdit";
 import UserEdit from "./components/User/UserEdit";
+import LocCompare from "./components/StoreB/LocCompare";
 
 function App() {
   const API_URL = import.meta.env.VITE_API_URL;
@@ -79,6 +80,7 @@ function App() {
             <Route path="find-matl" element={<FindMatl />} />
             <Route path="cal-matl" element={<CalMatl />} />
             <Route path="check-matlissue" element={<CheckMatlIssue />} />
+            <Route path="loc-compare" element={<LocCompare />} />
             <Route path="matltrans" element={<MatlTrans />} />
           </Route>
           <Route path="/zone">
